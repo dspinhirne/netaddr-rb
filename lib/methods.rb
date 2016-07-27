@@ -492,7 +492,7 @@ def range(lower, upper, options=nil)
 
             my_ip = my_ip + bitstep
             if (limit)
-                limit = limit -1
+                limit = limit - 1
                 break if (limit == 0)
             end
         end

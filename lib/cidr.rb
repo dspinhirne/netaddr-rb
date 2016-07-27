@@ -811,7 +811,7 @@ end
             my_ip = my_ip + bitstep
             change_mask = @hostmask | my_ip
             if (limit)
-                limit = limit -1
+                limit = limit - 1
                 break if (limit == 0)
             end
         end
