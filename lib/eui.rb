@@ -98,6 +98,9 @@ private_class_method :new
         # validate
         NetAddr.validate_eui(eui)
 
+        # Create a local copy of param
+        eui = eui.dup
+
         # remove formatting characters
         eui.gsub!(/[\.\:\-]/, '')
 
