@@ -151,19 +151,7 @@ private_class_method :new
         if (delimiter == '-' || delimiter == ':')
             addr = octets.join(delimiter)
         elsif (delimiter == '.')
-                toggle = 0
-                octets.each do |x|
-                    if (!addr)
-                        addr = x
-                        toggle = 1
-                    elsif (toggle == 0)
-                        addr = addr  << '.' << x
-                        toggle = 1
-                    else
-                        addr = addr << x
-                        toggle = 0
-                    end
-                end
+            addr = octets.each_slice(2).to_a.map(&:join).join('.')
         end
 
         return(addr)
