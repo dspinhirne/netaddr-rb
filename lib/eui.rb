@@ -1,9 +1,3 @@
-=begin rdoc
- Copyleft (c) 2006 Dustin Spinhirne
-
- Licensed under the same terms as Ruby, No Warranty is provided.
-=end
-
 module NetAddr
 
 #=EUI - Extended Unique Identifier
@@ -26,10 +20,6 @@ module NetAddr
 class EUI
 
 private_class_method :new
-
-#==============================================================================#
-# initialize()
-#==============================================================================#
 
 #===Synopsis
 # This method performs absolutely no error checking, and is meant to be used only by
@@ -71,10 +61,6 @@ private_class_method :new
 
     end
 
-#==============================================================================#
-# create()
-#==============================================================================#
-
 #===Synopsis
 #Create a new EUI48 or EUI64 object.
 #
@@ -95,7 +81,8 @@ private_class_method :new
             raise ArgumentError, "Expected String, but #{eui.class} provided."
         end
 
-        # validate
+        # create local copy & validate
+        eui = eui.dup
         NetAddr.validate_eui(eui)
 
         # remove formatting characters
@@ -109,10 +96,6 @@ private_class_method :new
 
         return(eui)
     end
-
-#==============================================================================#
-# address()
-#==============================================================================#
 
 #===Synopsis
 # Returns EUI address. The default address format is xxxx.xxxx.xxxx
@@ -148,27 +131,11 @@ private_class_method :new
         if (delimiter == '-' || delimiter == ':')
             addr = octets.join(delimiter)
         elsif (delimiter == '.')
-                toggle = 0
-                octets.each do |x|
-                    if (!addr)
-                        addr = x
-                        toggle = 1
-                    elsif (toggle == 0)
-                        addr = addr  << '.' << x
-                        toggle = 1
-                    else
-                        addr = addr << x
-                        toggle = 0
-                    end
-                end
+            addr = octets.each_slice(2).to_a.map(&:join).join('.')
         end
 
         return(addr)
     end
-
-#==============================================================================#
-# ei()
-#==============================================================================#
 
 #===Synopsis
 #Returns Extended Identifier portion of an EUI address (the vendor assigned ID).
@@ -211,10 +178,6 @@ private_class_method :new
         return(ei)
     end
 
-#==============================================================================#
-# link_local()
-#==============================================================================#
-
 #===Synopsis
 # Provide an IPv6 Link Local address based on the current EUI address.
 #
@@ -233,10 +196,6 @@ private_class_method :new
     def link_local(options=nil)
         return( self.to_ipv6('fe80::/64', options) )
     end
-
-#==============================================================================#
-# oui()
-#==============================================================================#
 
 #===Synopsis
 #Returns Organizationally Unique Identifier portion of an EUI address (the vendor ID).
@@ -274,10 +233,6 @@ private_class_method :new
         return(oui)
     end
 
-#==============================================================================#
-# to_i()
-#==============================================================================#
-
 #===Synopsis
 #Returns the EUI as an Integer.
 #
@@ -294,10 +249,6 @@ private_class_method :new
     def to_i()
         return(@eui_i)
     end
-
-#==============================================================================#
-# to_ipv6
-#==============================================================================#
 
 #===Synopsis
 # Given a valid IPv6 subnet, return an IPv6 address based on the current EUI.
@@ -371,10 +322,6 @@ private_class_method :new
         return(ipv6)
     end
 
-#==============================================================================#
-# to_s()
-#==============================================================================#
-
 #===Synopsis
 #Returns the EUI as an unformatted String.
 #
@@ -393,10 +340,6 @@ private_class_method :new
     end
 
 private
-
-#==============================================================================#
-# octets()
-#==============================================================================#
 
 #Returns array with each element representing a single octet of the eui.
 #
@@ -425,10 +368,6 @@ end
 class EUI48 < EUI
 
     public_class_method :new
-
-#==============================================================================#
-# to_eui64()
-#==============================================================================#
 
 #===Synopsis
 #Return an EUI64 address based on the current EUI48 address.

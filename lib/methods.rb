@@ -1,9 +1,3 @@
-=begin rdoc
- Copyleft (c) 2006 Dustin Spinhirne
-
- Licensed under the same terms as Ruby, No Warranty is provided.
-=end
-
 module NetAddr
 
 #==============================================================================#
@@ -492,7 +486,7 @@ def range(lower, upper, options=nil)
 
             my_ip = my_ip + bitstep
             if (limit)
-                limit = limit -1
+                limit = limit - 1
                 break if (limit == 0)
             end
         end

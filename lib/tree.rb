@@ -1,9 +1,3 @@
-=begin rdoc
- Copyleft (c) 2006 Dustin Spinhirne
-
- Licensed under the same terms as Ruby, No Warranty is provided.
-=end
-
 module NetAddr
 
 #=Tree
@@ -29,10 +23,6 @@ module NetAddr
 #
 class Tree
 
-#==============================================================================#
-# initialize()
-#==============================================================================#
-
 #===Synopsis
 #Create a new Tree object.
 #
@@ -47,10 +37,6 @@ class Tree
         @v4_root = NetAddr::CIDRv4.new(0,0,{:Subnets => []})
         @v6_root = NetAddr::CIDRv6.new(0,0,{:Subnets => []})
     end
-
-#==============================================================================#
-# add!()
-#==============================================================================#
 
 #===Synopsis
 # Add a CIDR address or NetAddr::CIDR object to the tree.
@@ -83,10 +69,6 @@ class Tree
 
         return(nil)
     end
-
-#==============================================================================#
-# ancestors()
-#==============================================================================#
 
 #===Synopsis
 # Returns all the ancestors of the provided CIDR addresses.
@@ -121,10 +103,6 @@ class Tree
         return(list)
     end
 
-#==============================================================================#
-# children()
-#==============================================================================#
-
 #===Synopsis
 # Returns all the immediate children of the provided CIDR addresses.
 #
@@ -158,10 +136,6 @@ class Tree
 
         return(list)
     end
-
-#==============================================================================#
-# descendants
-#==============================================================================#
 
 #===Synopsis
 # Return all descendants of the provided CIDR address.
@@ -198,10 +172,6 @@ class Tree
 
         return(list)
     end
-
-#==============================================================================#
-# delete!()
-#==============================================================================#
 
 #===Synopsis
 # Remove the provided CIDR address from the tree.
@@ -243,10 +213,6 @@ class Tree
         return(removed)
     end
 
-#==============================================================================#
-# dump
-#==============================================================================#
-
 #===Synopsis
 # Dump the contents of this tree.
 #
@@ -267,10 +233,6 @@ class Tree
         list.each {|x| x[:CIDR] =  NetAddr.cidr_build(x[:CIDR].version, x[:CIDR].to_i(:network), x[:CIDR].to_i(:netmask)) }
         return(list)
     end
-
-#==============================================================================#
-# exists?()
-#==============================================================================#
 
 #===Synopsis
 # Has a CIDR address already been added to the tree?
@@ -300,10 +262,6 @@ class Tree
         found = true if (find_me(cidr))
         return(found)
     end
-
-#==============================================================================#
-# fill_in!()
-#==============================================================================#
 
 #===Synopsis
 # Fill in the missing subnets of a particular CIDR.
@@ -341,10 +299,6 @@ class Tree
         return(filled)
     end
 
-#==============================================================================#
-# find()
-#==============================================================================#
-
 #===Synopsis
 # Find and return a CIDR from within the tree.
 #
@@ -374,10 +328,6 @@ class Tree
 
         return(me)
     end
-
-#==============================================================================#
-# find_space()
-#==============================================================================#
 
 #===Synopsis
 # Find subnets that are of at least size X. Only subnets that are not themselves 
@@ -446,10 +396,6 @@ class Tree
         return(new_list)
     end
 
-#==============================================================================#
-# longest_match()
-#==============================================================================#
-
 #===Synopsis
 #Find the longest matching branch of our tree to which a 
 #CIDR address belongs. Useful for performing 'routing table' style lookups.
@@ -478,10 +424,6 @@ class Tree
 
         return( NetAddr.cidr_build(found.version, found.to_i(:network), found.to_i(:netmask)) )
     end
-
-#==============================================================================#
-# prune!()
-#==============================================================================#
 
 #===Synopsis
 # Remove all subnets of the provided CIDR address.
@@ -517,10 +459,6 @@ class Tree
 
         return(pruned)
     end
-
-#==============================================================================#
-# remove!()
-#==============================================================================#
 
 #===Synopsis
 # Remove the provided CIDR address, and all of its subnets from the tree.
@@ -558,10 +496,6 @@ class Tree
 
         return(removed)
     end
-
-#==============================================================================#
-# resize!()
-#==============================================================================#
 
 #===Synopsis
 # Resize the provided CIDR address.
@@ -601,10 +535,6 @@ class Tree
         return(resized)
     end
 
-#==============================================================================#
-# root()
-#==============================================================================#
-
 #===Synopsis
 # Returns the root of the provided CIDR address.
 #
@@ -639,10 +569,6 @@ class Tree
 
         return( NetAddr.cidr_build(parent.version, parent.to_i(:network), parent.to_i(:netmask)) )
     end
-
-#==============================================================================#
-# show()
-#==============================================================================#
 
 #===Synopsis
 # Print the tree as a formatted string.
@@ -692,10 +618,6 @@ class Tree
         return(printed)
     end
 
-#==============================================================================#
-# siblings()
-#==============================================================================#
-
 #===Synopsis
 # Return list of the sibling CIDRs of the provided CIDR address.
 #
@@ -728,10 +650,6 @@ class Tree
 
         return(list)
     end
-
-#==============================================================================#
-# summarize_subnets!()
-#==============================================================================#
 
 #===Synopsis
 # Summarize all subnets of the provided CIDR address. The subnets will be
@@ -771,10 +689,6 @@ class Tree
     end
     alias :merge_subnets! :summarize_subnets!
 
-#==============================================================================#
-# supernets()
-#==============================================================================#
-
 #===Synopsis
 # Return list of the top-level supernets of this tree.
 #
@@ -795,12 +709,9 @@ class Tree
     end
 
 
-# PRIVATE INSTANCE METHODS
-private
 
-#==============================================================================#
-# add_to_parent()
-#==============================================================================#
+    
+private
 
 # Add NetStruct object to an array of NetStruct's
 #
@@ -831,10 +742,6 @@ private
         return(nil)
     end
 
-#==============================================================================#
-# add_to_tree()
-#==============================================================================#
-
 # Add CIDR to a Tree
 #
     def add_to_tree(cidr,root=nil)
@@ -843,10 +750,6 @@ private
 
         return(nil)
     end
-
-#==============================================================================#
-# dump_children()
-#==============================================================================#
 
 #  Dump contents of an Array of NetStruct objects
 #
@@ -863,10 +766,6 @@ private
 
         return(list)
     end
-
-#==============================================================================#
-# find_me()
-#==============================================================================#
 
 # Find the NetStruct to which a cidr belongs.
 #
@@ -886,10 +785,6 @@ private
 
         return(me)
     end
-
-#==============================================================================#
-# find_parent()
-#==============================================================================#
 
 # Find the parent NetStruct to which a child NetStruct belongs.
 #

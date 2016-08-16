@@ -1,9 +1,3 @@
-=begin rdoc
- Copyleft (c) 2006 Dustin Spinhirne
-
- Licensed under the same terms as Ruby, No Warranty is provided.
-=end
-
 module NetAddr
 
 #=CIDR - Classless Inter-Domain Routing
@@ -41,9 +35,6 @@ class CIDR
 
 private_class_method :new
 
-#==============================================================================#
-# attr_reader/attr_writer
-#==============================================================================#
 
     # IP version 4 or 6.
     attr_reader :version
@@ -70,10 +61,6 @@ private_class_method :new
         @tag = new_tag
     end
 
-#==============================================================================#
-# create()
-#==============================================================================#
-
 #===Synopsis
 #Create a new CIDRv4 or CIDRv6 object.
 #CIDR formatted netmasks take precedence over extended formatted ones.
@@ -81,21 +68,15 @@ private_class_method :new
 #:Mask takes precedence over netmask given within CIDR addresses.
 #Version will be auto-detected if not specified.
 #
-# NetAddr::CIDR.create('192.168.1.1/24')
-# NetAddr::CIDR.create('192.168.1.1 255.255.255.0')
-# NetAddr::CIDR.create(0x0a010001,
-#                      :Mask => 0xffffff00
-#                      :Version => 4)
-# NetAddr::CIDR.create('192.168.1.1',
-#                      :WildcardMask => ['0.7.0.255', true])
-# NetAddr::CIDR.create('192.168.1.1',
-#                      :WildcardMask => [0x000007ff, true]
-# NetAddr::CIDR.create('192.168.5.0',
-#                      :WildcardMask => ['255.248.255.0'])
-# NetAddr::CIDR.create('fec0::/64')
-# NetAddr::CIDR.create('fec0::/64',
-#                      :Tag => {'interface' => 'g0/1'})
-# NetAddr::CIDR.create('::ffff:192.168.1.1/96')
+#    NetAddr::CIDR.create('192.168.1.1/24')
+#    NetAddr::CIDR.create('192.168.1.1 255.255.255.0')
+#    NetAddr::CIDR.create(0x0a010001,:Mask => 0xffffff00:Version => 4)
+#    NetAddr::CIDR.create('192.168.1.1',:WildcardMask => ['0.7.0.255', true])
+#    NetAddr::CIDR.create('192.168.1.1',:WildcardMask => [0x000007ff, true]
+#    NetAddr::CIDR.create('192.168.5.0',:WildcardMask => ['255.248.255.0'])
+#    NetAddr::CIDR.create('fec0::/64')
+#    NetAddr::CIDR.create('fec0::/64',:Tag => {'interface' => 'g0/1'})
+#    NetAddr::CIDR.create('::ffff:192.168.1.1/96')
 #
 #===Arguments:
 #* addr = CIDR address as a String, or an IP address as an Integer
@@ -221,10 +202,6 @@ private_class_method :new
         return( NetAddr.cidr_build(version, ip, netmask, tag, wildcard_mask, wildcard_mask_bit_flipped) )
     end
 
-#==============================================================================#
-# initialize()
-#==============================================================================#
-
 # This method performs absolutely no error checking, and is meant to be used only by
 # other internal methods for the sake of the speedier creation of CIDR objects.
 # Please consider using #create unless you know what you are doing with 100% certainty.
@@ -267,10 +244,6 @@ private_class_method :new
 
     end
 
-#==============================================================================#
-# <()
-#==============================================================================#
-
 #===Synopsis
 #Compare the sort order of the current CIDR with a provided CIDR and return true
 #if current CIDR is less than provided CIDR.
@@ -306,10 +279,6 @@ private_class_method :new
 
         return(lt)
     end
-
-#==============================================================================#
-# <=>()
-#==============================================================================#
 
 #===Synopsis
 #Compare the sort order of the current CIDR with a provided CIDR and return:
@@ -350,10 +319,6 @@ private_class_method :new
         return(comparasin)
     end
 
-#==============================================================================#
-# ==()
-#==============================================================================#
-
 #===Synopsis
 #Compare the sort order of the current CIDR with a provided CIDR and return true
 #if current CIDR is equal to the provided CIDR.
@@ -391,10 +356,6 @@ private_class_method :new
     end
     alias :eql? :==
 
-#==============================================================================#
-# >()
-#==============================================================================#
-
 #===Synopsis
 #Compare the sort order of the current CIDR with a provided CIDR and return true
 #if current CIDR is greater than provided CIDR.
@@ -431,10 +392,6 @@ private_class_method :new
         return(gt)
     end
 
-#==============================================================================#
-# []
-#==============================================================================#
-
 #===Synopsis
 #Provide the IP at the given index of the CIDR.
 #
@@ -462,10 +419,6 @@ private_class_method :new
 
         return(addr)
     end
-
-#==============================================================================#
-# allocate_rfc3531()
-#==============================================================================#
 
 #===Synopsis
 #RFC 3531 describes a flexible method for IP subnet allocation from
@@ -564,10 +517,6 @@ private_class_method :new
         return(cidr_list)
     end
 
-#==============================================================================#
-# arpa()
-#==============================================================================#
-
 #===Synopsis
 #Depending on the IP version of the current CIDR,
 #return either an in-addr.arpa. or ip6.arpa. string. The netmask will be used
@@ -624,10 +573,6 @@ private_class_method :new
         return(arpa)
     end
 
-#==============================================================================#
-# bits()
-#==============================================================================#
-
 #===Synopsis
 #Provide number of bits in Netmask.
 # Example:
@@ -643,10 +588,6 @@ private_class_method :new
     def bits()
         return(NetAddr.mask_to_bits(@netmask))
     end
-
-#==============================================================================#
-# cmp()
-#==============================================================================#
 
 #===Synopsis
 #Compare the current CIDR with a provided CIDR and return:
@@ -689,10 +630,6 @@ private_class_method :new
     return(comparasin)
 end
 
-#==============================================================================#
-# contains?()
-#==============================================================================#
-
 #===Synopsis
 #Determines if this CIDR contains (is supernet of)
 #the provided CIDR address or NetAddr::CIDR object.
@@ -732,20 +669,12 @@ end
         return(contains)
     end
 
-#==============================================================================#
-# desc()
-#==============================================================================#
-
 #===Synopsis
 #See to_s
 #
     def desc(options=nil)
         to_s(options)
     end
-
-#==============================================================================#
-# enumerate()
-#==============================================================================#
 
 #===Synopsis
 #Provide all IP addresses contained within the IP space of this CIDR.
@@ -811,17 +740,13 @@ end
             my_ip = my_ip + bitstep
             change_mask = @hostmask | my_ip
             if (limit)
-                limit = limit -1
+                limit = limit - 1
                 break if (limit == 0)
             end
         end
 
         return(list)
     end
-
-#==============================================================================#
-# fill_in()
-#==============================================================================#
 
 #===Synopsis
 #Given a list of subnets of the current CIDR, return a new list with any
@@ -898,10 +823,6 @@ end
         end
     end
 
-#==============================================================================#
-# ip()
-#==============================================================================#
-
 #===Synopsis
 #Provide original IP address passed during initialization.
 #
@@ -949,10 +870,6 @@ end
         return(ip)
     end
 
-#==============================================================================#
-# is_contained?()
-#==============================================================================#
-
 #===Synopsis
 #Determines if this CIDR is contained within (is subnet of)
 #the provided CIDR address or NetAddr::CIDR object.
@@ -992,10 +909,6 @@ end
 
         return(is_contained)
     end
-
-#==============================================================================#
-# last()
-#==============================================================================#
 
 #===Synopsis
 #Provide last IP address in this CIDR object.
@@ -1045,10 +958,6 @@ end
         return(ip)
     end
 
-#==============================================================================#
-# matches?()
-#==============================================================================#
-
 #===Synopsis
 #Given an IP address (or if a NetAddr::CIDR object, then the original IP of that object), determine
 #if it falls within the range of addresses resulting from the combination of the 
@@ -1083,10 +992,6 @@ end
         return(true) if (@ip & @wildcard_mask == ip_int & @wildcard_mask)
         return(false)
     end
-
-#==============================================================================#
-# multicast_mac()
-#==============================================================================#
 
 #===Synopsis
 #Assuming this CIDR is a valid multicast address (224.0.0.0/4 for IPv4 
@@ -1143,10 +1048,6 @@ end
         return(eui)
     end
 
-#==============================================================================#
-# netmask()
-#==============================================================================#
-
 #===Synopsis
 #Provide netmask in CIDR format (/yy).
 #
@@ -1164,10 +1065,6 @@ end
         bits = NetAddr.mask_to_bits(@netmask)
         return("/#{bits}")
     end
-
-#==============================================================================#
-# network()
-#==============================================================================#
 
 #===Synopsis
 #Provide base network address.
@@ -1218,10 +1115,6 @@ end
 
     alias :base :network
     alias :first :network
-
-#==============================================================================#
-# next_ip()
-#==============================================================================#
 
 #===Synopsis
 #Provide the next IP following the last available IP within this CIDR object.
@@ -1283,10 +1176,6 @@ end
 
         return(next_ip)
     end
-
-#==============================================================================#
-# next_subnet()
-#==============================================================================#
 
 #===Synopsis
 #Provide the next subnet following this CIDR object. The next subnet will
@@ -1351,10 +1240,6 @@ end
         return(next_sub)
     end
 
-#==============================================================================#
-# nth()
-#==============================================================================#
-
 #===Synopsis
 #Provide the nth IP within this object.
 #
@@ -1412,10 +1297,6 @@ end
 
         return(my_ip)
     end
-
-#==============================================================================#
-# range()
-#==============================================================================#
 
 #===Synopsis
 #Given a set of index numbers for this CIDR, return all IP addresses within the
@@ -1509,10 +1390,6 @@ end
 
         return(list)
     end
-
-#==============================================================================#
-# remainder()
-#==============================================================================#
 
 #===Synopsis
 #Given a single subnet of the current CIDR, provide the remainder of
@@ -1608,10 +1485,6 @@ end
         return(new_subnets)
     end
 
-#==============================================================================#
-# resize()
-#==============================================================================#
-
 #===Synopsis
 #Resize the CIDR by changing the size of the Netmask. 
 #Return the resulting CIDR as a new object.
@@ -1636,10 +1509,6 @@ end
 
         return( NetAddr.cidr_build(@version, network, netmask) )
     end
-
-#==============================================================================#
-# resize!()
-#==============================================================================#
 
 #===Synopsis
 #Resize the current CIDR by changing the size of the Netmask. The original IP
@@ -1674,10 +1543,6 @@ end
 
         return(true)
     end
-
-#==============================================================================#
-# set_wildcard_mask()
-#==============================================================================#
 
 #===Synopsis
 #Set the wildcard mask. Wildcard masks are typically used for matching
@@ -1714,10 +1579,6 @@ end
         return(nil)
     end
 
-#==============================================================================#
-# size()
-#==============================================================================#
-
 #===Synopsis
 #Provide number of IP addresses within this CIDR.
 #
@@ -1734,10 +1595,6 @@ end
     def size()
         return(@hostmask + 1)
     end
-
-#==============================================================================#
-# subnet()
-#==============================================================================#
 
 #===Synopsis
 #Create subnets for this CIDR. There are 2 ways to create subnets:
@@ -1886,10 +1743,6 @@ end
         return(new_subnets)
     end
 
-#==============================================================================#
-# succ()
-#==============================================================================#
-
 #===Synopsis
 #Provide the next subnet following this CIDR object. The next subnet will
 #be of the same size as the current CIDR object.
@@ -1916,10 +1769,6 @@ end
 
         return(next_sub)
     end
-
-#==============================================================================#
-# to_i()
-#==============================================================================#
 
 #===Synopsis
 #Convert the requested attribute of the CIDR to an Integer.
@@ -1952,10 +1801,6 @@ end
             raise ArgumentError, "Attribute is unrecognized. Must be :hostmask, :ip, :netmask, :network, or :wildcard_mask."
         end
     end
-
-#==============================================================================#
-# to_s()
-#==============================================================================#
 
 #===Synopsis
 #Returns network/netmask in CIDR format.
@@ -2006,10 +1851,6 @@ end
         return("#{ip}/#{mask}")
     end
 
-#==============================================================================#
-# wildcard_mask()
-#==============================================================================#
-
 #===Synopsis
 #Return the wildcard mask.
 #
@@ -2047,16 +1888,8 @@ class CIDRv4 < CIDR
 
     public_class_method :new
 
-#==============================================================================#
-# broadcast()
-#==============================================================================#
-
 # Alias for last
     alias :broadcast :last
-
-#==============================================================================#
-# hostmask_ext()
-#==============================================================================#
 
 #===Synopsis
 #Provide IPv4 Hostmask in extended format (y.y.y.y).
@@ -2074,10 +1907,6 @@ class CIDRv4 < CIDR
     def hostmask_ext()
         return(NetAddr.ip_int_to_str(@hostmask, @version))
     end
-
-#==============================================================================#
-# netmask_ext()
-#==============================================================================#
 
 #===Synopsis
 #Provide IPv4 netmask in extended format (y.y.y.y).
@@ -2109,10 +1938,6 @@ end # end class CIDRv4
 # Addresses of this class are composed of a 128-bit address space.
 class CIDRv6 < CIDR
     public_class_method :new
-
-#==============================================================================#
-# unique_local()
-#==============================================================================#
 
 #===Synopsis
 #Generate an IPv6 Unique Local CIDR address based on the algorithm described

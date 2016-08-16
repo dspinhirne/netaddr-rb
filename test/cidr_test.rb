@@ -1,6 +1,7 @@
 #!/usr/bin/ruby
 
-require 'lib/netaddr.rb'
+#require 'lib/netaddr.rb'
+require_relative "../lib/netaddr.rb"
 require 'test/unit'
 
 
