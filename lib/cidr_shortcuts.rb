@@ -3,10 +3,6 @@ private
 
 # CIDR METHODS
 
-#==============================================================================#
-# cidr_build()
-#==============================================================================#
-
 # create either a CIDRv4 or CIDRv6 object
 #
 def cidr_build(version, ip, netmask=nil, tag={}, wildcard_mask=nil, wildcard_mask_bit_flipped=false)
@@ -15,9 +11,6 @@ def cidr_build(version, ip, netmask=nil, tag={}, wildcard_mask=nil, wildcard_mas
 end
 module_function :cidr_build
 
-#==============================================================================#
-# cidr_compare()
-#==============================================================================#
 
 # compare 2 CIDR objects
 #
@@ -52,10 +45,6 @@ def cidr_compare(cidr1,cidr2)
 end
 module_function :cidr_compare
 
-#==============================================================================#
-# cidr_gt_lt()
-#==============================================================================#
-
 # given a pair of CIDRs, determine if first is greater than or less than the second
 #
 # return 1 if cidr1 > cidr2
@@ -77,10 +66,6 @@ def cidr_gt_lt(cidr1,cidr2)
     return(gt_lt)
 end
 module_function :cidr_gt_lt
-
-#==============================================================================#
-# cidr_fill_in()
-#==============================================================================#
 
 #Given a list of subnets of supernet, return a new list with any
 #holes (missing subnets) filled in.
@@ -120,10 +105,6 @@ def cidr_fill_in(supernet,list)
 end
 module_function :cidr_fill_in
 
-#==============================================================================#
-# cidr_find_in_list()
-#==============================================================================#
-
 # evaluate cidr against list of cidrs.
 #
 # return entry from list if entry is supernet of cidr (first matching entry)
@@ -158,10 +139,6 @@ def cidr_find_in_list(cidr,list)
     return(match)
 end
 module_function :cidr_find_in_list
-
-#==============================================================================#
-# cidr_make_subnets_from_base_and_ip_count()
-#==============================================================================#
 
 # Make CIDR addresses from a base addr and an number of ip's to encapsulate.
 #
@@ -203,10 +180,6 @@ module_function :cidr_find_in_list
         return(list)
     end
 module_function :cidr_make_subnets_from_base_and_ip_count
-
-#==============================================================================#
-# cidr_sort()
-#==============================================================================#
 
 # given a list of NetAddr::CIDRs, return them as a sorted list
 #
@@ -257,10 +230,6 @@ def cidr_sort(list, desc=false)
     return(sorted_list)
 end
 module_function :cidr_sort
-
-#==============================================================================#
-# cidr_summarize()
-#==============================================================================#
 
 # given a list of NetAddr::CIDRs (of the same version) summarize them
 #
@@ -347,10 +316,6 @@ def cidr_summarize(subnet_list)
 end
 module_function :cidr_summarize
 
-#==============================================================================#
-# cidr_supernets()
-#==============================================================================#
-
 # given a list of NetAddr::CIDRs (of the same version), return only the 'top level' blocks (i.e. blocks not
 # contained by other blocks
 
@@ -375,10 +340,6 @@ def cidr_supernets(subnet_list)
     return(summary_list)
 end
 module_function :cidr_supernets
-
-#==============================================================================#
-# netmask_sort()
-#==============================================================================#
 
 # given a list of NetAddr::CIDRs, return them as a sorted (by netmask) list
 #

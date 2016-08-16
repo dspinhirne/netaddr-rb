@@ -4,10 +4,6 @@ private
 
 # IP MATH METHODS
 
-#==============================================================================#
-# binary_mirror()
-#==============================================================================#
-
 # given an integer and number of bits to consider, return its binary mirror
 #
 def binary_mirror(num, bit_count)
@@ -22,10 +18,6 @@ def binary_mirror(num, bit_count)
 end
 module_function :binary_mirror
 
-#==============================================================================#
-# bits_to_mask()
-#==============================================================================#
-
 # convert a netmask (in bits) to an integer mask
 #
 def bits_to_mask(netmask,version)
@@ -35,10 +27,6 @@ def bits_to_mask(netmask,version)
     return( all_f ^ (all_f >> netmask) )
 end
 module_function :bits_to_mask
-
-#==============================================================================#
-# detect_ip_version()
-#==============================================================================#
 
 # determine the ip version from ip address string.
 #
@@ -56,10 +44,6 @@ def detect_ip_version(ip)
     return(version)
 end
 module_function :detect_ip_version
-
-#==============================================================================#
-# ip_count_to_size()
-#==============================================================================#
 
 # given an ip count, determine the most appropriate mask (in bits)
 #
@@ -82,10 +66,6 @@ def ip_count_to_size(ipcount,version,extended=false)
     return(subnet_bits)
 end
 module_function :ip_count_to_size
-
-#==============================================================================#
-# ip_int_to_str()
-#==============================================================================#
 
 # unpack an int into an ip address string
 #
@@ -128,10 +108,6 @@ def ip_int_to_str(ip_int, version, ipv4_mapped=nil)
     return(ip)
 end
 module_function :ip_int_to_str
-
-#==============================================================================#
-# ip_str_to_int()
-#==============================================================================#
 
 # convert an ip string into an int
 #
@@ -197,10 +173,6 @@ def ip_str_to_int(ip,version)
 end
 module_function :ip_str_to_int
 
-#==============================================================================#
-# mask_to_bits()
-#==============================================================================#
-
 # convert integer into a cidr formatted netmask (bits)
 #
 def mask_to_bits(netmask_int)
@@ -225,10 +197,6 @@ def mask_to_bits(netmask_int)
     return(mask)
 end
 module_function :mask_to_bits
-
-#==============================================================================#
-# netmask_str_to_int()
-#==============================================================================#
 
 # convert string into integer mask
 #

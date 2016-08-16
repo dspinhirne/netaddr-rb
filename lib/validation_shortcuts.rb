@@ -1,10 +1,6 @@
 module NetAddr
 private
 
-#==============================================================================#
-# validate_args()
-#==============================================================================#
-
 # validate options hash 
 #
 def validate_args(to_validate,known_args)
@@ -14,10 +10,6 @@ def validate_args(to_validate,known_args)
     end
 end 
 module_function :validate_args
-
-#==============================================================================#
-# validate_ip_int()
-#==============================================================================#
 
 def validate_ip_int(ip,version)
     version = 4 if (!version && ip < 2**32)
@@ -30,10 +22,6 @@ def validate_ip_int(ip,version)
     return(version)
 end
 module_function :validate_ip_int
-
-#==============================================================================#
-# validate_ip_str()
-#==============================================================================#
 
 def validate_ip_str(ip,version)
     # check validity of charaters
@@ -129,9 +117,6 @@ def validate_ip_str(ip,version)
 end
 module_function :validate_ip_str
 
-#==============================================================================#
-# validate_netmask_int()
-#==============================================================================#
 def validate_netmask_int(netmask,version,is_int=false)
     address_len = 32
     address_len = 128 if (version == 6)
@@ -149,9 +134,6 @@ def validate_netmask_int(netmask,version,is_int=false)
 end
 module_function :validate_netmask_int
 
-#==============================================================================#
-# validate_netmask_str()
-#==============================================================================#
 def validate_netmask_str(netmask,version)
     address_len = 32
     address_len = 128 if (version == 6)

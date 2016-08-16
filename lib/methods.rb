@@ -1,9 +1,5 @@
 module NetAddr
 
-#==============================================================================#
-# i_to_bits()
-#==============================================================================#
-
 #===Synopsis
 #Convert an Integer representing a binary netmask into an Integer representing
 #the number of bits in that netmask.
@@ -28,10 +24,6 @@ def i_to_bits(netmask_int)
     return( mask_to_bits(netmask_int) )
 end
 module_function :i_to_bits
-
-#==============================================================================#
-# i_to_ip()
-#==============================================================================#
 
 #===Synopsis
 #Convert an Integer into an IP address. This method will attempt to auto-detect the IP version
@@ -82,10 +74,6 @@ def i_to_ip(ip_int, options=nil)
 end
 module_function :i_to_ip
 
-#==============================================================================#
-# ip_to_i()
-#==============================================================================#
-
 #===Synopsis
 #Convert IP addresses into an Integer. This method will attempt to auto-detect the IP version
 #if not provided, however a slight speed increase is realized if version is provided.
@@ -134,10 +122,6 @@ def ip_to_i(ip, options=nil)
     return(ip_int)
 end
 module_function :ip_to_i
-
-#==============================================================================#
-# merge()
-#==============================================================================#
 
 #===Synopsis
 #Given a list of CIDR addresses or NetAddr::CIDR objects,
@@ -247,10 +231,6 @@ def merge(list,options=nil)
 end
 module_function :merge
 
-#==============================================================================#
-# minimum_size()
-#==============================================================================#
-
 #===Synopsis
 #Given the number of IP addresses required in a subnet, return the minimum
 #netmask (bits by default) required for that subnet. IP version is assumed to be 4 unless specified otherwise.
@@ -294,10 +274,6 @@ def minimum_size(ipcount, options=nil)
     return( ip_count_to_size(ipcount,version,extended) )
 end
 module_function :minimum_size
-
-#==============================================================================#
-# netmask_to_i()
-#==============================================================================#
 
 #===Synopsis
 #Convert IP netmask into an Integer. Netmask may be in either CIDR (/yy) or
@@ -354,10 +330,6 @@ def netmask_to_i(netmask, options=nil)
     return(netmask_int)
 end
 module_function :netmask_to_i
-
-#==============================================================================#
-# range()
-#==============================================================================#
 
 #===Synopsis
 #Given two CIDR addresses or NetAddr::CIDR objects of the same version,
@@ -498,10 +470,6 @@ def range(lower, upper, options=nil)
 end
 module_function :range
 
-#==============================================================================#
-# shorten()
-#==============================================================================#
-
 #===Synopsis
 #Take a standard IPv6 address and format it in short-hand notation.
 #The address should not contain a netmask.
@@ -590,10 +558,6 @@ def shorten(addr)
 end
 module_function :shorten
 
-#==============================================================================#
-# sort()
-#==============================================================================#
-
 #===Synopsis
 #Sort a list of CIDR addresses or NetAddr::CIDR objects,
 #
@@ -673,10 +637,6 @@ def sort(list, options=nil)
     return(ret_list)
 end
 module_function :sort
-
-#==============================================================================#
-# supernets()
-#==============================================================================#
 
 #===Synopsis
 #Given a list of CIDR addresses or NetAddr::CIDR objects,
@@ -774,10 +734,6 @@ def supernets(list,options=nil)
 end
 module_function :supernets
 
-#==============================================================================#
-# unshorten()
-#==============================================================================#
-
 #===Synopsis
 #Take an IPv6 address in short-hand format, and expand it into standard
 #notation. The address should not contain a netmask.
@@ -811,10 +767,6 @@ def unshorten(ip)
     return(long)
 end
 module_function :unshorten
-
-#==============================================================================#
-# validate_eui()
-#==============================================================================#
 
 #===Synopsis
 #Validate an EUI-48 or EUI-64 address. Raises NetAddr::ValidationError on validation failure.
@@ -864,10 +816,6 @@ def validate_eui(eui)
     return(true)
 end
 module_function :validate_eui
-
-#==============================================================================#
-# validate_ip_addr()
-#==============================================================================#
 
 #===Synopsis
 #Validate an IP address. The address should not contain a netmask.
@@ -924,10 +872,6 @@ def validate_ip_addr(ip, options=nil)
 end
 module_function :validate_ip_addr
 
-#==============================================================================#
-# validate_ip_netmask()
-#==============================================================================#
-
 #===Synopsis
 #Validate IP Netmask. Version defaults to 4 if not specified.
 #Raises NetAddr::ValidationError on validation failure.
@@ -981,10 +925,6 @@ def validate_ip_netmask(netmask, options=nil)
     return(true)
 end
 module_function :validate_ip_netmask
-
-#==============================================================================#
-# wildcard()
-#==============================================================================#
 
 #===Synopsis
 #Convert a wildcard IP into a valid CIDR address. Wildcards must always be at
