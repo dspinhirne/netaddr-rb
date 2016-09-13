@@ -1,3 +1,7 @@
+Version 1.5.2
+Changes:
+* bug fixes from: https://github.com/KirillSmirnov, https://github.com/rwhitworth, https://github.com/y13i
+
 Version 1.5.1
 Changes:
 * fixed bug with NetAddr#merge (credit to Daniel Boughton)
