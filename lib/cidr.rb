@@ -845,7 +845,7 @@ end
 
         if (options)
             if (!options.kind_of?(Hash))
-                raise Argumenterror, "Expected Hash, but " +
+                raise ArgumentError, "Expected Hash, but " +
                                      "#{options.class} provided."
             end
             NetAddr.validate_args(options.keys,known_args)
@@ -932,7 +932,7 @@ end
 
         if (options)
             if (!options.kind_of?(Hash))
-                raise Argumenterror, "Expected Hash, but " +
+                raise ArgumentError, "Expected Hash, but " +
                                      "#{options.class} provided."
             end
             NetAddr.validate_args(options.keys,known_args)
@@ -1088,7 +1088,7 @@ end
 
         if (options)
             if (!options.kind_of?(Hash))
-                raise Argumenterror, "Expected Hash, but " +
+                raise ArgumentError, "Expected Hash, but " +
                                      "#{options.class} provided."
             end
             NetAddr.validate_args(options.keys,known_args)
@@ -1142,7 +1142,7 @@ end
 
         if (options)
             if (!options.kind_of?(Hash))
-                raise Argumenterror, "Expected Hash, but " +
+                raise ArgumentError, "Expected Hash, but " +
                                      "#{options.class} provided."
             end
             NetAddr.validate_args(options.keys,known_args)
@@ -1204,7 +1204,7 @@ end
 
         if (options)
             if (!options.kind_of?(Hash))
-                raise Argumenterror, "Expected Hash, but " +
+                raise ArgumentError, "Expected Hash, but " +
                                      "#{options.class} provided."
             end
             NetAddr.validate_args(options.keys,known_args)
@@ -1500,7 +1500,7 @@ end
 #* NetAddr::CIDR object
 #
     def resize(bits)
-        raise Argumenterror, "Integer or Hash expected, but " +
+        raise ArgumentError, "Integer or Hash expected, but " +
                              "#{bits.class} provided." if (!bits.kind_of?(Integer))
 
         NetAddr.validate_ip_netmask(bits, :Version => @version)
@@ -1526,7 +1526,7 @@ end
 #* True
 #
     def resize!(bits)
-        raise Argumenterror, "Integer or Hash expected, but " +
+        raise ArgumentError, "Integer or Hash expected, but " +
                                  "#{bits.class} provided." if (!bits.kind_of?(Integer))
 
         NetAddr.validate_ip_netmask(bits, :Version => @version)
