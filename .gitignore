@@ -1,4 +1,6 @@
 # ruby gems 
 *.gem
 
+#Personal task list
+tasks.md
 

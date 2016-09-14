@@ -31,6 +31,3 @@ new to Ruby when I wrote it. The 2.x code base will not be compatible with the 1
 
 # Contributing
 Once I decide on the basic classes then I will welcome others to port over any methods which they may need but are missing.
-
-
-

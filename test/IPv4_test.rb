@@ -22,4 +22,14 @@ class TestIPv4 < Test::Unit::TestCase
 		assert_raise(NetAddr::ValidationError){ NetAddr::IPv4.parse("128.0.0.1.1") }
 		assert_raise(NetAddr::ValidationError){ NetAddr::IPv4.parse("128") }
 	end
+	
+	def test_cmp
+		ip = NetAddr::IPv4.parse("128.0.0.1")
+		ip2 = NetAddr::IPv4.parse("128.0.0.0")
+		ip3 =NetAddr::IPv4.parse("128.0.0.2")
+		ip4 = NetAddr::IPv4.parse("128.0.0.1")
+		assert_equal(1, ip.cmp(ip2))
+		assert_equal(-1, ip.cmp(ip3))
+		assert_equal(0, ip.cmp(ip4))
+	end
 end
