@@ -40,6 +40,22 @@ module NetAddr
 			return 0
 		end
 		
+		# next returns the next consecutive IPv4 or nil if the address space is exceeded
+		def next()
+			if (self.addr == 0xffffffff)
+				return nil
+			end
+			return IPv4.new(self.addr + 1)
+		end
+		
+		# prev returns the preceding IPv4 or nil if this is 0.0.0.0
+		def prev()
+			if (self.addr == 0)
+				return nil
+			end
+			return IPv4.new(self.addr - 1)
+		end
+		
 		# to_s returns the IPv4 as a String
 		def to_s()
 			NetAddr.intToIPv4(@addr)

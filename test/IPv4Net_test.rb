@@ -39,4 +39,46 @@ class TestIPv4Net < Test::Unit::TestCase
 		assert_equal("128.0.0.0 255.255.255.0", net.extended)
 	end
 	
+	def test_len
+		net1 = NetAddr::IPv4Net.parse("1.1.1.0/24")
+		assert_equal(256, net1.len())
+	end
+	
+	def test_next_sib
+		assert_equal("255.255.255.64/26", NetAddr::IPv4Net.parse("255.255.255.0/26").next_sib.to_s)
+		assert_equal("255.255.255.128/26", NetAddr::IPv4Net.parse("255.255.255.64/26").next_sib.to_s)
+		assert_equal("255.255.255.192/26", NetAddr::IPv4Net.parse("255.255.255.128/26").next_sib.to_s)
+		assert_nil(NetAddr::IPv4Net.parse("255.255.255.192/26").next_sib)
+	end
+	
+	def test_nth
+		assert_equal("1.1.1.1", NetAddr::IPv4Net.parse("1.1.1.0/26").nth(1).to_s)
+		assert_nil(NetAddr::IPv4Net.parse("1.1.1.0/26").nth(64))
+	end
+	
+	def test_nth_subnet
+		assert_equal("1.1.1.0/26", NetAddr::IPv4Net.parse("1.1.1.0/24").nth_subnet(26,0).to_s)
+		assert_equal("1.1.1.64/26", NetAddr::IPv4Net.parse("1.1.1.0/24").nth_subnet(26,1).to_s)
+		assert_nil(NetAddr::IPv4Net.parse("1.1.1.0/24").nth_subnet(26,4))
+		assert_nil(NetAddr::IPv4Net.parse("1.1.1.0/24").nth_subnet(26,-1))
+		assert_nil(NetAddr::IPv4Net.parse("1.1.1.0/24").nth_subnet(24,0))
+	end
+	
+	def test_prev_sib
+		assert_equal("0.0.0.64/26", NetAddr::IPv4Net.parse("0.0.0.128/26").prev_sib.to_s)
+		assert_equal("0.0.0.0/26", NetAddr::IPv4Net.parse("0.0.0.64/26").prev_sib.to_s)
+		assert_nil(NetAddr::IPv4Net.parse("0.0.0.0/26").prev_sib)
+	end
+	
+	def test_resize
+		assert_equal("1.1.1.0/24", NetAddr::IPv4Net.parse("1.1.1.0/26").resize(24).to_s)
+	end
+	
+	def test_subnet_count
+		assert_equal(2, NetAddr::IPv4Net.parse("1.1.1.0/24").subnet_count(25))
+		assert_equal(0, NetAddr::IPv4Net.parse("1.1.1.0/24").subnet_count(24))
+		assert_equal(0, NetAddr::IPv4Net.parse("1.1.1.0/24").subnet_count(33))
+		assert_equal(0, NetAddr::IPv4Net.parse("0.0.0.0/0").subnet_count(32))
+	end
+	
 end

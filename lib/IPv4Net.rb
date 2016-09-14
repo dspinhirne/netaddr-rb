@@ -69,9 +69,93 @@ module NetAddr
 			@base
 		end
 		
+		#len returns the number of IP addresses in this network. It will always return 0 for /0 networks.
+		def len()
+			return self.netmask.len
+		end
+		
+		# next_sib returns the network immediately following this one or nil if the end of the address space is reached.
+		def next_sib()
+			self.nth_sib(1,false)
+		end
+		
+		# nth returns the IPv4 at the given index.
+		# The size of the network may be determined with the len() method.
+		# If the range is exceeded then return nil.
+		def nth(index)
+			if (!index.kind_of?(Integer))
+				raise ArgumentError, "Expected an Integer for 'index' but got a #{index.class}."
+			elsif (index >= self.len)
+				return nil
+			end
+			return IPv4.new(self.network.addr + index)
+		end
+		
+		# nth_subnet returns the subnet IPv4Net at the given index.
+		# The number of subnets may be determined with the subnet_count() method.
+		# If the range is exceeded  or an invalid prefix_len is provided then return nil.
+		def nth_subnet(prefix_len,index)
+			count = self.subnet_count(prefix_len)
+			if (count == 0 || index >= count)
+				return nil
+			end
+			sub0 = IPv4Net.new(self.network, Mask32.new(prefix_len))
+			return sub0.nth_sib(index,false)
+		end
+		
+		# prev_sib returns the network immediately preceding this one or nil if this network is 0.0.0.0.
+		def prev_sib()
+			self.nth_sib(1,true)
+		end
+		
+		# resize returns a copy of the network with an adjusted netmask.
+		# Throws ValidationError on invalid prefix_len.
+		def resize(prefix_len)
+			m32 = Mask32.new(prefix_len)
+			return IPv4Net.new(self.network,m32)
+		end
+		
+		# subnet_count returns the number a subnets of a given prefix length that this IPv4Net contains.
+		# It will return 0 for invalid requests (ie. bad prefix or prefix is shorter than that of this network).
+		# It will also return 0 if the result exceeds the capacity of a 32-bit integer (ie. if you want the # of /32 a /0 will hold)
+		def subnet_count(prefix_len)
+			if (prefix_len <= self.netmask.prefix_len || prefix_len > 32 || prefix_len - self.netmask.prefix_len >= 32)
+				return 0
+			end
+			return 1 << (prefix_len - self.netmask.prefix_len)
+		end
+		
 		# to_s returns the IPv4Net as a String
 		def to_s()
 			return @base.to_s + @m32.to_s
+		end
+		
+		
+		protected
+		
+		# nth_sib returns the nth next sibling network or nil if address space exceeded.
+		# nth_sib will return the nth previous sibling if prev is true
+		def nth_sib(nth,prev)
+			if (nth < 0)
+				return nil
+			end
+			
+			addr = 0
+			# right shift by # of bits of host portion of address, add nth.
+			# and left shift back. this is the sibling network.
+			shift = 32 - self.netmask.prefix_len
+			if (prev)
+				addr = ((self.network.addr>>shift) - nth) << shift
+				if addr < 0
+					return nil
+				end
+			else
+				addr = ((self.network.addr>>shift) + nth) << shift
+				if addr > 0xffffffff
+					return nil
+				end
+			end
+			return IPv4Net.new(IPv4.new(addr), self.netmask)
 		end
 		
 	end # end class IPv4Net

@@ -32,4 +32,14 @@ class TestIPv4 < Test::Unit::TestCase
 		assert_equal(-1, ip.cmp(ip3))
 		assert_equal(0, ip.cmp(ip4))
 	end
+	
+	def test_next
+		assert_equal("255.255.255.255", NetAddr::IPv4.parse("255.255.255.254").next().to_s)
+		assert_nil(NetAddr::IPv4.parse("255.255.255.255").next())
+	end
+	
+	def test_prev
+		assert_equal("0.0.0.0", NetAddr::IPv4.parse("0.0.0.1").prev().to_s)
+		assert_nil(NetAddr::IPv4.parse("0.0.0.0").prev())
+	end
 end
