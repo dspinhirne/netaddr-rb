@@ -44,6 +44,12 @@ class TestIPv4Net < Test::Unit::TestCase
 		assert_equal(256, net1.len())
 	end
 	
+	def test_next
+		assert_equal("1.0.0.2/31", NetAddr::IPv4Net.parse("1.0.0.0/31").next.to_s)
+		assert_equal("1.0.0.8/29", NetAddr::IPv4Net.parse("1.0.0.4/30").next.to_s)
+		assert_equal("1.0.0.16/28", NetAddr::IPv4Net.parse("1.0.0.8/29").next.to_s)
+	end
+	
 	def test_next_sib
 		assert_equal("255.255.255.64/26", NetAddr::IPv4Net.parse("255.255.255.0/26").next_sib.to_s)
 		assert_equal("255.255.255.128/26", NetAddr::IPv4Net.parse("255.255.255.64/26").next_sib.to_s)
@@ -64,10 +70,29 @@ class TestIPv4Net < Test::Unit::TestCase
 		assert_nil(NetAddr::IPv4Net.parse("1.1.1.0/24").nth_subnet(24,0))
 	end
 	
+	def test_prev
+		assert_equal("1.0.0.0/29", NetAddr::IPv4Net.parse("1.0.0.8/30").prev.to_s)
+		assert_equal("1.0.0.128/26", NetAddr::IPv4Net.parse("1.0.0.192/26").prev.to_s)
+		assert_equal("1.0.0.0/25", NetAddr::IPv4Net.parse("1.0.0.128/26").prev.to_s)
+	end
+	
 	def test_prev_sib
 		assert_equal("0.0.0.64/26", NetAddr::IPv4Net.parse("0.0.0.128/26").prev_sib.to_s)
 		assert_equal("0.0.0.0/26", NetAddr::IPv4Net.parse("0.0.0.64/26").prev_sib.to_s)
 		assert_nil(NetAddr::IPv4Net.parse("0.0.0.0/26").prev_sib)
+	end
+	
+	def test_rel
+		net1 = NetAddr::IPv4Net.parse("1.1.1.0/24")
+		net2 = NetAddr::IPv4Net.parse("1.1.1.0/25")
+		net3 = NetAddr::IPv4Net.parse("1.1.1.128/25")
+		net4 = NetAddr::IPv4Net.parse("1.1.1.0/25")
+		assert_equal(1, net1.rel(net2)) # net eq, supernet
+		assert_equal(-1, net2.rel(net1)) # net eq, subnet
+		assert_equal(0, net2.rel(net2)) # eq
+		assert_equal(1, net1.rel(net3)) # net ne, supernet
+		assert_equal(-1, net3.rel(net1)) # net ne, subnet
+		assert_nil(net3.rel(net4)) # unrelated
 	end
 	
 	def test_resize

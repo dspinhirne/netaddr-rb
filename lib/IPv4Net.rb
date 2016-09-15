@@ -74,6 +74,15 @@ module NetAddr
 			return self.netmask.len
 		end
 		
+		# next returns the next largest consecutive IP network or nil if the end of the address space is reached.
+		def next()
+			net = self.nth_sib(1,false)
+			if (!net)
+				return nil
+			end
+			return net.grow
+		end
+		
 		# next_sib returns the network immediately following this one or nil if the end of the address space is reached.
 		def next_sib()
 			self.nth_sib(1,false)
@@ -103,10 +112,75 @@ module NetAddr
 			return sub0.nth_sib(index,false)
 		end
 		
+		# prev returns the previous largest consecutive IP network or nil if this is 0.0.0.0.
+		def prev()
+			net = self.grow
+			return net.nth_sib(1,true)
+		end
+		
 		# prev_sib returns the network immediately preceding this one or nil if this network is 0.0.0.0.
 		def prev_sib()
 			self.nth_sib(1,true)
 		end
+		
+		# rel determines the relationship to another IPv4Net. Retuns:
+		# * 1 if this IPv4Net is the supernet of other
+		# * 0 if the two are equal
+		# * -1 if this IPv4Net is a subnet of other
+		# * nil if the networks are unrelated
+		def rel(other)
+			if (!other.kind_of?(IPv4Net))
+				raise ArgumentError, "Expected an IPv4Net object for 'other' but got a #{other.class}."
+			end
+			
+			# when networks are equal then we can look exlusively at the netmask
+			if (self.network.addr == other.network.addr)
+				return self.netmask.cmp(other.netmask)
+			end
+			
+			# when networks are not equal we can use hostmask to test if they are
+			# related and which is the supernet vs the subnet
+			hostmask = self.netmask.mask ^ 0xffffffff
+			otherHostmask = other.netmask.mask ^ 0xffffffff
+			if (self.network.addr|hostmask == other.network.addr|hostmask)
+				return 1
+			elsif (self.network.addr|otherHostmask == other.network.addr|otherHostmask)
+				return -1
+			end
+			return nil
+		end
+		
+# 		
+# /*
+# Rel determines the relationship to another IPv4Net. The method returns
+# two values: a bool and an int. If the bool is false, then the two networks
+# are unrelated and the int will be 0. If the bool is true, then the int will
+# be interpreted as:
+# 	* 1 if this IPv4Net is the supernet of other
+# 	* 0 if the two are equal
+# 	* -1 if this IPv4Net is a subnet of other
+# */
+# func (net *IPv4Net) Rel(other *IPv4Net) (bool, int) {
+# 	if other == nil {
+# 		return false, 0
+# 	}
+# 
+# 	// when networks are equal then we can look exlusively at the netmask
+# 	if net.base.addr == other.base.addr {
+# 		return true, net.m32.Cmp(other.m32)
+# 	}
+# 
+# 	// when networks are not equal we can use hostmask to test if they are
+# 	// related and which is the supernet vs the subnet
+# 	netHostmask := net.m32.mask ^ ALL_ONES32
+# 	otherHostmask := other.m32.mask ^ ALL_ONES32
+# 	if net.base.addr|netHostmask == other.base.addr|netHostmask {
+# 		return true, 1
+# 	} else if net.base.addr|otherHostmask == other.base.addr|otherHostmask {
+# 		return true, -1
+# 	}
+# 	return false, 0
+# }
 		
 		# resize returns a copy of the network with an adjusted netmask.
 		# Throws ValidationError on invalid prefix_len.
@@ -133,6 +207,21 @@ module NetAddr
 		
 		protected
 		
+		# grow decreases the prefix length as much as possible without crossing a bit boundary.
+		def grow()
+			addr = self.network.addr
+			mask = self.netmask.mask
+			prefix_len = self.netmask.prefix_len
+			self.netmask.prefix_len.downto(0) do
+				mask = (mask << 1) & 0xffffffff
+				if addr|mask != mask || prefix_len == 0 # // bit boundary crossed when there are '1' bits in the host portion
+					break
+				end
+				prefix_len -= 1
+			end
+			return IPv4Net.new(IPv4.new(addr),Mask32.new(prefix_len))
+		end
+
 		# nth_sib returns the nth next sibling network or nil if address space exceeded.
 		# nth_sib will return the nth previous sibling if prev is true
 		def nth_sib(nth,prev)
