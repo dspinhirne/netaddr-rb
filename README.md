@@ -21,8 +21,8 @@ Example code may be found in test/example.rb. This example code runs as part of 
 
 
 # Coding Style
-I follow the following conventions:
-* I use tabs for indention, as tabs make it really easy to adjust indention widths on the fly.
+I use the following conventions:
+* I use tabs for indention since tabs make it really easy to adjust indention widths on the fly.
 * I do not follow rigid limits on line lengths. My editor auto-wraps so I add a line break where it feels appropriate.
 * I'm not a fan of obfuscation. I prefer clear code over fancy code.
 * I try to add sensible comments... mostly because I forget what the hell I was thinking 3 months down the road.
