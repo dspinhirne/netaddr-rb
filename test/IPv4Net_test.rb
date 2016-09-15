@@ -17,6 +17,7 @@ class TestIPv4Net < Test::Unit::TestCase
 	def test_parse
 		assert_equal("128.0.0.0/24", NetAddr::IPv4Net.parse("128.0.0.1/24").to_s)
 		assert_equal("128.0.0.0/24", NetAddr::IPv4Net.parse("128.0.0.1 255.255.255.0").to_s)
+		assert_equal("0.0.0.0/0", NetAddr::IPv4Net.parse("0.0.0.0/0").to_s)
 		assert_equal("128.0.0.1/32", NetAddr::IPv4Net.parse("128.0.0.1").to_s) # default /32
 	end
 	
@@ -37,6 +38,44 @@ class TestIPv4Net < Test::Unit::TestCase
 	def test_extended
 		net = NetAddr::IPv4Net.parse("128.0.0.1/24")
 		assert_equal("128.0.0.0 255.255.255.0", net.extended)
+	end
+
+	def test_fill
+		parent = NetAddr::IPv4Net.parse("10.0.0.0/24")
+		nets = []
+		["10.0.0.0/24", "10.0.0.0/8", "10.0.0.8/30", "10.0.0.16/30", "10.0.0.16/28"].each do |net|
+			nets.push(NetAddr::IPv4Net.parse(net))
+		end
+		expect = ["10.0.0.0/29", "10.0.0.8/30", "10.0.0.12/30", "10.0.0.16/28", "10.0.0.32/27", "10.0.0.64/26", "10.0.0.128/25"]
+		i = 0
+		parent.fill(nets).each do |net|
+			assert_equal(expect[i],net.to_s)
+			i += 1
+		end
+		
+		parent = NetAddr::IPv4Net.parse("128.0.0.0/1")
+		nets = []
+		["192.0.0.0/2"].each do |net|
+			nets.push(NetAddr::IPv4Net.parse(net))
+		end
+		expect = ["128.0.0.0/2", "192.0.0.0/2"]
+		i = 0
+		parent.fill(nets).each do |net|
+			assert_equal(expect[i],net.to_s)
+			i += 1
+		end
+		
+		parent = NetAddr::IPv4Net.parse("1.0.0.0/25")
+		nets = []
+		["1.0.0.0/30", "1.0.0.64/26"].each do |net|
+			nets.push(NetAddr::IPv4Net.parse(net))
+		end
+		expect = ["1.0.0.0/30", "1.0.0.4/30", "1.0.0.8/29", "1.0.0.16/28", "1.0.0.32/27", "1.0.0.64/26"]
+		i = 0
+		parent.fill(nets).each do |net|
+			assert_equal(expect[i],net.to_s)
+			i += 1
+		end
 	end
 	
 	def test_len
@@ -104,6 +143,24 @@ class TestIPv4Net < Test::Unit::TestCase
 		assert_equal(0, NetAddr::IPv4Net.parse("1.1.1.0/24").subnet_count(24))
 		assert_equal(0, NetAddr::IPv4Net.parse("1.1.1.0/24").subnet_count(33))
 		assert_equal(0, NetAddr::IPv4Net.parse("0.0.0.0/0").subnet_count(32))
+	end
+	
+	def test_summ
+		net1 = NetAddr::IPv4Net.parse("1.1.1.0/30")
+		net2 = NetAddr::IPv4Net.parse("1.1.1.4/30")
+		net3 = NetAddr::IPv4Net.parse("1.1.1.16/28")
+		net4 = NetAddr::IPv4Net.parse("1.1.1.0/28")
+		net5 = NetAddr::IPv4Net.parse("1.1.2.0/30")
+		net6 = NetAddr::IPv4Net.parse("1.1.1.4/30")
+		net7 = NetAddr::IPv4Net.parse("1.1.1.16/28")
+		net8 = NetAddr::IPv4Net.parse("1.1.1.32/28")
+		net9 = NetAddr::IPv4Net.parse("1.1.1.0/29")
+		net10 = NetAddr::IPv4Net.parse("1.1.1.8/30")
+		assert_equal("1.1.1.0/29", net1.summ(net2).to_s) # lesser to greater
+		assert_equal("1.1.1.0/27", net3.summ(net4).to_s) # greater to lesser
+		assert_nil(net5.summ(net6)) # different nets
+		assert_nil(net7.summ(net8)) # consecutive but not within bit boundary
+		assert_nil(net9.summ(net10)) # within bit boundary, but not same size
 	end
 	
 end

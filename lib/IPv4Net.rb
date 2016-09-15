@@ -39,7 +39,7 @@ module NetAddr
 
 		# extended returns the IPv4Net in extended format (eg. x.x.x.x y.y.y.y)
 		def extended()
-			return @base.to_s + " " + NetAddr.intToIPv4(@m32.mask)
+			return @base.to_s + " " + NetAddr.int_to_IPv4(@m32.mask)
 		end
 		
 		#cmp compares equality with another IPv4Net. Return:
@@ -57,6 +57,49 @@ module NetAddr
 				return cmp
 			end
 			return self.netmask.cmp(other.netmask)
+		end
+		
+		# fill returns a copy of the given Array, stripped of any networks which are not subnets of this IPv4Net
+		# and with any missing gaps filled in.
+		def fill(list)
+			list = NetAddr.filter_IPv4Net(list)
+			
+			# sort & git rid of non subnets
+			subs = []
+			NetAddr.discard_subnets(list).each do |sub|
+				r = self.rel(sub)
+				if (r == 1)
+					subs.push(sub)
+				end
+			end
+			subs = NetAddr.quick_sort(subs)
+			
+			filled = []
+			if (subs.length > 0)
+				# bottom fill if base missing
+				base = self.network.addr
+				if (subs[0].network.addr != base)
+					filled = subs[0].backfill(base)
+				end
+				
+				# fill gaps
+				sib = self.nth_sib(1,false)
+				ceil = 0xffffffff
+				if (sib != nil)
+					ceil = sib.network.addr
+				end
+				
+				0.upto(subs.length-1) do |i|
+					sub = subs[i]
+					filled.push(sub)
+					limit = ceil
+					if (i+1 < subs.length)
+						limit = subs[i+1].network.addr
+					end
+					filled.concat( sub.fwdfill(limit) )
+				end
+			end
+			return filled
 		end
 		
 		# netmask returns the Mask32 object representing the netmask for this network
@@ -150,38 +193,6 @@ module NetAddr
 			return nil
 		end
 		
-# 		
-# /*
-# Rel determines the relationship to another IPv4Net. The method returns
-# two values: a bool and an int. If the bool is false, then the two networks
-# are unrelated and the int will be 0. If the bool is true, then the int will
-# be interpreted as:
-# 	* 1 if this IPv4Net is the supernet of other
-# 	* 0 if the two are equal
-# 	* -1 if this IPv4Net is a subnet of other
-# */
-# func (net *IPv4Net) Rel(other *IPv4Net) (bool, int) {
-# 	if other == nil {
-# 		return false, 0
-# 	}
-# 
-# 	// when networks are equal then we can look exlusively at the netmask
-# 	if net.base.addr == other.base.addr {
-# 		return true, net.m32.Cmp(other.m32)
-# 	}
-# 
-# 	// when networks are not equal we can use hostmask to test if they are
-# 	// related and which is the supernet vs the subnet
-# 	netHostmask := net.m32.mask ^ ALL_ONES32
-# 	otherHostmask := other.m32.mask ^ ALL_ONES32
-# 	if net.base.addr|netHostmask == other.base.addr|netHostmask {
-# 		return true, 1
-# 	} else if net.base.addr|otherHostmask == other.base.addr|otherHostmask {
-# 		return true, -1
-# 	}
-# 	return false, 0
-# }
-		
 		# resize returns a copy of the network with an adjusted netmask.
 		# Throws ValidationError on invalid prefix_len.
 		def resize(prefix_len)
@@ -199,6 +210,28 @@ module NetAddr
 			return 1 << (prefix_len - self.netmask.prefix_len)
 		end
 		
+		# summ creates a summary address from this IPv4Net and another.
+		# It returns nil if the two networks are incapable of being summarized.
+		def summ(other)
+			if (!other.kind_of?(IPv4Net))
+				raise ArgumentError, "Expected an IPv4Net object for 'other' but got a #{other.class}."
+			end
+			
+			# netmasks must be identical
+			if (self.netmask.prefix_len != other.netmask.prefix_len)
+				return nil
+			end
+			
+			# merge-able networks will be identical if you right shift them by the number of bits in the hostmask + 1
+			shift = 32 - self.netmask.prefix_len + 1
+			addr = self.network.addr >> shift
+			otherAddr = other.network.addr >> shift
+			if (addr != otherAddr)
+				return nil
+			end
+			return self.resize(self.netmask.prefix_len - 1)
+		end
+		
 		# to_s returns the IPv4Net as a String
 		def to_s()
 			return @base.to_s + @m32.to_s
@@ -206,6 +239,38 @@ module NetAddr
 		
 		
 		protected
+		
+		# backfill generates subnets between this net and the limit address.
+		# limit should be < net. will create subnets up to and including limit.
+		def backfill(limit)
+			nets = []
+			cur = self
+			while true do
+				net = cur.prev
+				if (net == nil || net.network.addr < limit)
+					break
+				end
+				nets.unshift(net)
+				cur = net
+			end
+			return nets
+		end
+		
+		# fwdfill returns subnets between this net and the limit address.
+		# limit should be > net. will create subnets up to limit.
+		def fwdfill(limit)
+			nets = []
+			cur = self
+			while true do
+				net = cur.next
+				if (net == nil || net.network.addr >= limit)
+					break
+				end
+				nets.push(net)
+				cur = net
+			end
+			return nets
+		end
 		
 		# grow decreases the prefix length as much as possible without crossing a bit boundary.
 		def grow()

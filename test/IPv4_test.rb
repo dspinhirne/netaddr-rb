@@ -14,8 +14,8 @@ class TestIPv4 < Test::Unit::TestCase
 	end
 	
 	def test_parse
-		ip = NetAddr::IPv4.parse("128.0.0.1")
-		assert_equal("128.0.0.1", ip.to_s)
+		assert_equal("128.0.0.1", NetAddr::IPv4.parse("128.0.0.1").to_s)
+		assert_equal("0.0.0.0", NetAddr::IPv4.parse("0.0.0.0").to_s)
 		
 		assert_raise(NetAddr::ValidationError){ NetAddr::IPv4.parse("128.0.0.1a") }
 		assert_raise(NetAddr::ValidationError){ NetAddr::IPv4.parse("256.0.0.1") }

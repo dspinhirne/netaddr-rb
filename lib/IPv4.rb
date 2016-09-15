@@ -20,7 +20,7 @@ module NetAddr
 		# Throws ValidationError on error.
 		def IPv4.parse(ip)
 			ip.strip!
-			i = NetAddr.parseIPv4(ip)
+			i = NetAddr.parse_IPv4(ip)
 			return IPv4.new(i)
 		end
 		
@@ -58,7 +58,7 @@ module NetAddr
 		
 		# to_s returns the IPv4 as a String
 		def to_s()
-			NetAddr.intToIPv4(@addr)
+			NetAddr.int_to_IPv4(@addr)
 		end
 		
 	end # end class IPv4

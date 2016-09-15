@@ -40,7 +40,7 @@ module NetAddr
 			# by creating a hostmask which covers the '0' bits of the mask. once we have
 			# separated the net vs host mask we xor them together. the result should be that
 			# all bits are now '1'. if not then we know we have an invalid netmask.
-			maskI = NetAddr.parseIPv4(mask)
+			maskI = NetAddr.parse_IPv4(mask)
 			prefix = 32
 			hostmask = 1
 			i = maskI 
