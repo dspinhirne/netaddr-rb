@@ -10,7 +10,7 @@ class TestIPv4 < Test::Unit::TestCase
 		
 		assert_raise(NetAddr::ValidationError){ NetAddr::IPv4.new(0x8000000001) }
 		assert_raise(NetAddr::ValidationError){ NetAddr::IPv4.new(-1) }
-		assert_raise(NetAddr::ValidationError){ NetAddr::IPv4.new("128.0.0.1") }
+		assert_raise(NetAddr::ValidationError){ NetAddr::IPv4.new("128.0.0.1") } # string
 	end
 	
 	def test_parse

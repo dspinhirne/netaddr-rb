@@ -42,7 +42,7 @@ module NetAddr
 		
 		# next returns the next consecutive IPv4 or nil if the address space is exceeded
 		def next()
-			if (self.addr == 0xffffffff)
+			if (self.addr == NetAddr::F32)
 				return nil
 			end
 			return IPv4.new(self.addr + 1)

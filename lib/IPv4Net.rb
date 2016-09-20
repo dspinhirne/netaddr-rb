@@ -84,7 +84,7 @@ module NetAddr
 				
 				# fill gaps
 				sib = self.nth_sib(1,false)
-				ceil = 0xffffffff
+				ceil = NetAddr::F32
 				if (sib != nil)
 					ceil = sib.network.addr
 				end
@@ -183,8 +183,8 @@ module NetAddr
 			
 			# when networks are not equal we can use hostmask to test if they are
 			# related and which is the supernet vs the subnet
-			hostmask = self.netmask.mask ^ 0xffffffff
-			otherHostmask = other.netmask.mask ^ 0xffffffff
+			hostmask = self.netmask.mask ^ NetAddr::F32
+			otherHostmask = other.netmask.mask ^ NetAddr::F32
 			if (self.network.addr|hostmask == other.network.addr|hostmask)
 				return 1
 			elsif (self.network.addr|otherHostmask == other.network.addr|otherHostmask)
@@ -278,7 +278,7 @@ module NetAddr
 			mask = self.netmask.mask
 			prefix_len = self.netmask.prefix_len
 			self.netmask.prefix_len.downto(0) do
-				mask = (mask << 1) & 0xffffffff
+				mask = (mask << 1) & NetAddr::F32
 				if addr|mask != mask || prefix_len == 0 # // bit boundary crossed when there are '1' bits in the host portion
 					break
 				end
@@ -305,7 +305,7 @@ module NetAddr
 				end
 			else
 				addr = ((self.network.addr>>shift) + nth) << shift
-				if addr > 0xffffffff
+				if addr > NetAddr::F32
 					return nil
 				end
 			end

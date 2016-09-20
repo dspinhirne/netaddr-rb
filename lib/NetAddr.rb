@@ -1,8 +1,19 @@
 require_relative "IPv4.rb"
 require_relative "IPv4Net.rb"
+require_relative "IPv6.rb"
+require_relative "IPv6Net.rb"
 require_relative "Mask32.rb"
+require_relative "Mask128.rb"
 
 module NetAddr
+	# Constants
+	
+	# 32 bits worth of '1'
+	F32 = 2**32-1
+	
+	# 128 bits worth of '1'
+	F128 = 2**128-1
+	
 
 	# ValidationError is thrown when a method fails a validation test.
   class ValidationError < StandardError
@@ -114,6 +125,7 @@ module NetAddr
 			raise ValidationError, "#{ip} contains invalid characters."
 		end
 		
+		ip.strip!
 		octets = ip.split('.')
 		if (octets.length != 4)
 			raise ValidationError, "IPv4 requires (4) octets."
@@ -132,6 +144,65 @@ module NetAddr
 		return ipInt
 	end
 	module_function :parse_IPv4
+	
+	# parse_IPv6 parses an IPv6 address String into an Integer
+	def parse_IPv6(ip)
+	# check that only valid characters are present
+		if (ip =~ /[^0-9a-fA-F\:]/)
+			raise ValidationError, "#{ip} contains invalid characters."
+		end
+		
+		ip.strip!
+		if (ip == "::")
+			return 0 # zero address
+		end
+		words = []
+		if (ip.include?("::")) # short format
+			if (ip =~ /:{3,}/) # make sure only i dont have ":::"
+				raise ValidationError, "#{ip} contains invalid field separator."
+			end
+			if (ip.scan(/::/).length != 1)
+				raise ValidationError, "#{ip} contains multiple '::' sequences."
+			end
+			
+			halves = ip.split("::")
+			if (halves[0] == nil) # cases such as ::1
+				halves[0] = "0"
+			end
+			if (halves[1] == nil) # cases such as 1::
+				halves[1] = "0"
+			end
+			upHalf = halves[0].split(":")
+			loHalf = halves[1].split(":")
+			numWords = upHalf.length + loHalf.length
+			if (numWords > 6)
+				raise ValidationError, "#{ip} is too long."
+			end
+			words = upHalf
+			(8-numWords).downto(1) do |i|
+				words.push("0")
+			end
+			words.concat(loHalf)
+		else
+			words = ip.split(":")
+			if (words.length > 8)
+			   raise ValidationError, "#{ip} is too long."
+			elsif (words.length < 8)
+				raise ValidationError, "#{ip} is too short."
+			end
+		end
+		
+		ipInt = 0
+		i = 8
+		words.each do |word|
+			i -= 1
+			word = word.to_i(16) << (16*i)
+			ipInt = ipInt | word
+		end
+		
+		return ipInt
+	end
+	module_function :parse_IPv6
 		
 	# quick_sort will return a sorted copy of the provided Array.
 	# The array must contain only objects which implement a cmp method and which are comparable to each other.

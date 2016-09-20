@@ -17,12 +17,12 @@ module NetAddr
 				raise ValidationError, "#{prefix_len} must be in the range of 0-32."
 			end
 			@prefix_len = prefix_len
-			@mask = 0xffffffff ^ (0xffffffff >> @prefix_len)
+			@mask = NetAddr::F32 ^ (NetAddr::F32 >> @prefix_len)
 		end
 		
 		# parse will create an Mask32 from its string representation.
 		# arguments:
-		#	* ip - String representing an ip address (ie. "192.168.1.1").
+		#	* mask - String representing a netmask (ie. "/24" or "255.255.255.0").
 		#
 		#	Throws ValidationError on error.
 		def Mask32.parse(mask)
@@ -47,7 +47,7 @@ module NetAddr
 			32.downto(1) do
 				if (i&1 == 1)
 					hostmask = hostmask >> 1
-					if (maskI ^hostmask != 0xffffffff)
+					if (maskI ^hostmask != NetAddr::F32)
 						raise ValidationError, "#{mask} is invalid. It contains '1' bits in its host portion."
 					end
 					break
@@ -86,7 +86,7 @@ module NetAddr
 			if (self.prefix_len == 0)
 				return 0
 			end
-			return (self.mask ^ 0xffffffff) + 1 # bit flip the netmask and add 1
+			return (self.mask ^ NetAddr::F32) + 1 # bit flip the netmask and add 1
 		end
 		
 		# to_s returns the Mask32 as a String
