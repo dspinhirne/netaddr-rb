@@ -75,6 +75,7 @@ module NetAddr
 				shift = 112 - 16*i
 				wd = (self.addr >> shift) & 0xffff
 				hexStr[i] = wd.to_s(16)
+				
 				# capture count of consecutive zeros
 				if (wd == 0)
 					if (zeroStart == -1)
@@ -85,7 +86,7 @@ module NetAddr
 				
 				# test for longest consecutive zeros when non-zero encountered or we're at the end
 				if (wd != 0 || i == 7)
-					if (consec0 > finalStart+finalLen)
+					if (consec0 > finalStart+finalLen-1)
 						finalStart = zeroStart
 						finalLen = consec0
 					end

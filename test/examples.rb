@@ -10,7 +10,11 @@ class NetAddrExamples < Test::Unit::TestCase
 	def test_IPv4_examples
 		puts "\n*** Examples using IPv4 ***\n"
 		
-		puts "Creating IPv4Net: '10.0.0.0/24'"
+		puts "\nWhat size network do I need in order to hold 200 addresses?"
+		puts "/" + NetAddr.ipv4_prefix_len(200).to_s
+		assert_equal(24,NetAddr.ipv4_prefix_len(200))
+		
+		puts "\nCreating IPv4Net: '10.0.0.0/24'"
 		net = NetAddr::IPv4Net.parse("10.0.0.0/24")
 		assert_not_nil(net)
 		
@@ -38,7 +42,7 @@ class NetAddrExamples < Test::Unit::TestCase
 			puts "  " + ip.to_s
 		end
 		
-		puts "\n Given the 3rd /30 of 10.0.0.0/24, fill in the holes:"
+		puts "\nGiven the 3rd /30 of 10.0.0.0/24, fill in the holes:"
 		expect = ["10.0.0.0/29","10.0.0.8/30","10.0.0.12/30","10.0.0.16/28","10.0.0.32/27","10.0.0.64/26","10.0.0.128/25"]
 		i = 0
 		net.fill([subnet30]).each do |subnet|
@@ -48,7 +52,7 @@ class NetAddrExamples < Test::Unit::TestCase
 		end
 		
 		list = ["10.0.1.0/24", "10.0.0.0/25", "10.0.0.128/26","10.0.2.0/24", "10.0.0.192/26",]
-		puts "\n Summarizing this list of networks: " + list.to_s
+		puts "\nSummarizing this list of networks: " + list.to_s
 		nets = []
 		list.each do |net|
 			nets.push(NetAddr::IPv4Net.parse(net))
@@ -60,7 +64,62 @@ class NetAddrExamples < Test::Unit::TestCase
 			assert_equal(expect[i],net.to_s)
 			i += 1
 		end
+	end
+	
+	# IPv6
+	def test_IPv6_examples
+		puts "\n\n*** Examples using IPv6 ***\n"
 		
+		puts "\nCreating IPv6Net: 'fec0::/62'"
+		net = NetAddr::IPv6Net.parse("fec0::/62")
+		assert_not_nil(net)
+		
+		puts "\nRendering as a String: " + net.to_s
+		assert_equal("fec0::/62", net.to_s)
+		
+		puts "\nIterating its /64 subnets:"
+		expect = ["fec0::/64","fec0:0:0:1::/64","fec0:0:0:2::/64","fec0:0:0:3::/64"]
+		0.upto(net.subnet_count(64) - 1) do |i|
+			subnet = net.nth_subnet(64,i)
+			assert_equal(expect[i], subnet.to_s)
+			puts "  " + subnet.to_s
+		end
+		
+		puts "\nIts 3rd /64 subnet:"
+		subnet64 = net.nth_subnet(64,2)
+		assert_equal("fec0:0:0:2::/64", subnet64.to_s)
+		puts "  " + subnet64.to_s
+		
+		puts "\nIterating the first 4 IPs of the /64"
+		expect = ["fec0:0:0:2::","fec0:0:0:2::1","fec0:0:0:2::2","fec0:0:0:2::3"]
+		0.upto(3) do |i|
+			ip = subnet64.nth(i)
+			assert_equal(expect[i], ip.to_s)
+			puts "  " + ip.to_s
+		end
+		
+		puts "\nGiven the 3rd /64 of fec0::/62, fill in the holes:"
+		expect = ["fec0::/63", "fec0:0:0:2::/64","fec0:0:0:3::/64"]
+		i = 0
+		net.fill([subnet64]).each do |subnet|
+			puts "  " + subnet.to_s
+			assert_equal(expect[i], subnet.to_s)
+			i+=1
+		end
+		
+		list = ["fec0::/63", "fec0:0:0:3::/64", "fec0:0:0:2::/64", "fe80::/17", "fe80:8000::/17"]
+		puts "\nSummarizing this list of networks: " + list.to_s
+		nets = []
+		list.each do |net|
+			nets.push(NetAddr::IPv6Net.parse(net))
+		end
+		expect = ["fe80::/16", "fec0::/62"]
+		i = 0
+		NetAddr.summ_IPv6Net(nets).each do |net|
+			puts "  " + net.to_s
+			assert_equal(expect[i],net.to_s)
+			i += 1
+		end
 	end
 	
 end

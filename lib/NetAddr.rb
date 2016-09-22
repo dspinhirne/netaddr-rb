@@ -19,6 +19,21 @@ module NetAddr
   class ValidationError < StandardError
   end
 	
+	# ipv4_prefix_len returns the prefix length needed to hold the number of IP addresses specified by "size".
+	def ipv4_prefix_len(size)
+		prefix_len = 32
+		32.downto(0) do |i|
+			hostbits = 32 - prefix_len
+			max = 1 << hostbits
+			if (size <= max)
+				break
+			end
+			prefix_len -= 1
+		end
+		return prefix_len
+	end
+	module_function :ipv4_prefix_len
+	
 	# sort_IPv4 sorts a list of IPv4 objects in ascending order.
 	# It will return a new list with any non IPv4 objects removed.
 	def sort_IPv4(list)
@@ -29,6 +44,17 @@ module NetAddr
 		return quick_sort(filtered)
 	end
 	module_function :sort_IPv4
+	
+	# sort_IPv6 sorts a list of IPv6 objects in ascending order.
+	# It will return a new list with any non IPv6 objects removed.
+	def sort_IPv6(list)
+		if ( !list.kind_of?(Array) )
+			raise ArgumentError, "Expected an Array for 'list' but got a #{list.class}."
+		end
+		filtered = filter_IPv6(list)
+		return quick_sort(filtered)
+	end
+	module_function :sort_IPv6
 	
 	# sort_IPv4Net sorts a list of IPv4Net objects in ascending order.
 	# It will return a new list with any non IPv4Net objects removed.
@@ -41,7 +67,18 @@ module NetAddr
 	end
 	module_function :sort_IPv4Net
 	
-	# summ_IPv4Netr summarizes a list of IPv4Net objects as much as possible.
+	# sort_IPv6Net sorts a list of IPv6Net objects in ascending order.
+	# It will return a new list with any non IPv6Net objects removed.
+	def sort_IPv6Net(list)
+		if ( !list.kind_of?(Array) )
+			raise ArgumentError, "Expected an Array for 'list' but got a #{list.class}."
+		end
+		filtered = filter_IPv6Net(list)
+		return quick_sort(filtered)
+	end
+	module_function :sort_IPv6Net
+	
+	# summ_IPv4Net summarizes a list of IPv4Net objects as much as possible.
 	# It will return a new list with any non IPv4Net objects removed.
 	def summ_IPv4Net(list)
 		list = filter_IPv4Net(list)
@@ -53,7 +90,36 @@ module NetAddr
 	end
 	module_function :summ_IPv4Net
 	
+	# summ_IPv6Net summarizes a list of IPv6Net objects as much as possible.
+	# It will return a new list with any non IPv6Net objects removed.
+	def summ_IPv6Net(list)
+		list = filter_IPv6Net(list)
+		if (list.length>1)
+			list = discard_subnets(list)
+			return summ_peers(list)
+		end
+		return [].concat(list)
+	end
+	module_function :summ_IPv6Net
+	
 	protected
+	
+	# backfill generates subnets between given IPv4Net/IPv6Net and the limit address.
+	# limit should be < ipnet. will create subnets up to and including limit.
+	def backfill(ipnet,limit)
+		nets = []
+		cur = ipnet
+		while true do
+			net = cur.prev
+			if (net == nil || net.network.addr < limit)
+				break
+			end
+			nets.unshift(net)
+			cur = net
+		end
+		return nets
+	end
+	module_function :backfill
 	
 	# discard_subnets returns a copy of the IPv4NetList with any entries which are subnets of other entries removed.
 	def discard_subnets(list)
@@ -83,6 +149,48 @@ module NetAddr
 	end
 	module_function :discard_subnets
 	
+	# fill returns a copy of the given Array, stripped of any networks which are not subnets of ipnet
+	# and with any missing gaps filled in.
+	def fill(ipnet,list)
+		# sort & git rid of non subnets
+		subs = []
+		discard_subnets(list).each do |sub|
+			r = ipnet.rel(sub)
+			if (r == 1)
+				subs.push(sub)
+			end
+		end
+		subs = quick_sort(subs)
+		
+		filled = []
+		if (subs.length > 0)
+			# bottom fill if base missing
+			base = ipnet.network.addr
+			if (subs[0].network.addr != base)
+				filled = backfill(subs[0],base)
+			end
+			
+			# fill gaps
+			sib = ipnet.next_sib()
+			ceil = NetAddr::F32
+			if (sib != nil)
+				ceil = sib.network.addr
+			end
+			
+			0.upto(subs.length-1) do |i|
+				sub = subs[i]
+				filled.push(sub)
+				limit = ceil
+				if (i+1 < subs.length)
+					limit = subs[i+1].network.addr
+				end
+				filled.concat( fwdfill(sub,limit) )
+			end
+		end
+		return filled
+	end
+	module_function :fill
+	
 	# filter_IPv4 returns a copy of list with only IPv4 objects
 	def filter_IPv4(list)
 		filtered = []
@@ -106,6 +214,47 @@ module NetAddr
 		return filtered
 	end
 	module_function :filter_IPv4Net
+	
+	# filter_IPv6 returns a copy of list with only IPv6 objects
+	def filter_IPv6(list)
+		filtered = []
+		list.each do |ip|
+			if (ip.kind_of?(IPv6))
+				filtered.push(ip)
+			end
+		end
+		return filtered
+	end
+	module_function :filter_IPv6
+	
+	# filter_IPv6Net returns a copy of list with only IPv4Net objects
+	def filter_IPv6Net(list)
+		filtered = []
+		list.each do |ip|
+			if (ip.kind_of?(IPv6Net))
+				filtered.push(ip)
+			end
+		end
+		return filtered
+	end
+	module_function :filter_IPv6Net
+	
+	# fwdfill returns subnets between given IPv4Net/IPv6Nett and the limit address.
+	# limit should be > ipnet. will create subnets up to limit.
+	def fwdfill(ipnet,limit)
+		nets = []
+		cur = ipnet
+		while true do
+			net = cur.next
+			if (net == nil || net.network.addr >= limit)
+				break
+			end
+			nets.push(net)
+			cur = net
+		end
+		return nets
+	end
+	module_function :fwdfill
 	
 	# int_to_IPv4 converts an Integer into an IPv4 address String
 	def int_to_IPv4(i)

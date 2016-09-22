@@ -6,7 +6,7 @@ require 'test/unit'
 class TestIPv6 < Test::Unit::TestCase
 	def test_new
 		ip = NetAddr::IPv6.new(1)
-		assert_equal("::1", ip.to_s)
+		assert_equal(1, ip.addr)
 		
 		assert_raise(NetAddr::ValidationError){ NetAddr::IPv6.new(2**128) }
 		assert_raise(NetAddr::ValidationError){ NetAddr::IPv6.new(-1) }
@@ -47,7 +47,7 @@ class TestIPv6 < Test::Unit::TestCase
 	end
 	
 	def test_next
-		assert_equal("::1", NetAddr::IPv6.parse("::").next().to_s)
+		assert_equal(1, NetAddr::IPv6.parse("::").next().addr)
 		assert_nil(NetAddr::IPv6.parse("ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff").next())
 	end
 	
@@ -66,6 +66,14 @@ class TestIPv6 < Test::Unit::TestCase
 		assert_equal("::1:0:0", NetAddr::IPv6.parse("0:0:0:0:0:1:0:0").to_s)
 		assert_equal("::1:0", NetAddr::IPv6.parse(":0:0:0:0:0:1:0").to_s)
 		assert_equal("::1", NetAddr::IPv6.parse("0:0:0:0:0:0:0:1").to_s)
+		
+		assert_equal("1::1", NetAddr::IPv6.parse("1:0:0:0:0:0:0:1").to_s)
+		assert_equal("1:1::1", NetAddr::IPv6.parse("1:1:0:0:0:0:0:1").to_s)
+		assert_equal("1:0:1::1", NetAddr::IPv6.parse("1:0:1:0:0:0:0:1").to_s)
+		assert_equal("1:0:0:1::1", NetAddr::IPv6.parse("1:0:0:1:0:0:0:1").to_s)
+		assert_equal("1::1:0:0:1", NetAddr::IPv6.parse("1:0:0:0:1:0:0:1").to_s)
+		assert_equal("1::1:0:1", NetAddr::IPv6.parse("1:0:0:0:0:1:0:1").to_s)
+		assert_equal("1::1:1", NetAddr::IPv6.parse("1:0:0:0:0:0:1:1").to_s)
 	end
 
 end

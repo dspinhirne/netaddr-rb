@@ -24,16 +24,17 @@ module NetAddr
 		# Throws ValidationError on error.
 		def IPv4Net.parse(net)
 			net.strip!
+			m32 = nil
 			if (net.include?("/")) # cidr format
 				addr,mask = net.split("/")
+				m32 = Mask32.parse(mask)
 			elsif (net.include?(" ") ) # extended format
 				addr,mask = net.split(' ')
+				m32 = Mask32.parse(mask)
 			else
 				addr = net
-				mask = "32"
 			end
 			ip = IPv4.parse(addr)
-			m32 = Mask32.parse(mask)
 			return IPv4Net.new(ip,m32)
 		end
 
@@ -63,43 +64,7 @@ module NetAddr
 		# and with any missing gaps filled in.
 		def fill(list)
 			list = NetAddr.filter_IPv4Net(list)
-			
-			# sort & git rid of non subnets
-			subs = []
-			NetAddr.discard_subnets(list).each do |sub|
-				r = self.rel(sub)
-				if (r == 1)
-					subs.push(sub)
-				end
-			end
-			subs = NetAddr.quick_sort(subs)
-			
-			filled = []
-			if (subs.length > 0)
-				# bottom fill if base missing
-				base = self.network.addr
-				if (subs[0].network.addr != base)
-					filled = subs[0].backfill(base)
-				end
-				
-				# fill gaps
-				sib = self.nth_sib(1,false)
-				ceil = NetAddr::F32
-				if (sib != nil)
-					ceil = sib.network.addr
-				end
-				
-				0.upto(subs.length-1) do |i|
-					sub = subs[i]
-					filled.push(sub)
-					limit = ceil
-					if (i+1 < subs.length)
-						limit = subs[i+1].network.addr
-					end
-					filled.concat( sub.fwdfill(limit) )
-				end
-			end
-			return filled
+			return NetAddr.fill(self,list)
 		end
 		
 		# netmask returns the Mask32 object representing the netmask for this network
@@ -112,7 +77,7 @@ module NetAddr
 			@base
 		end
 		
-		#len returns the number of IP addresses in this network. It will always return 0 for /0 networks.
+		#len returns the number of IP addresses in this network. It will return 0 for /0 networks.
 		def len()
 			return self.netmask.len
 		end
@@ -239,39 +204,7 @@ module NetAddr
 		
 		
 		protected
-		
-		# backfill generates subnets between this net and the limit address.
-		# limit should be < net. will create subnets up to and including limit.
-		def backfill(limit)
-			nets = []
-			cur = self
-			while true do
-				net = cur.prev
-				if (net == nil || net.network.addr < limit)
-					break
-				end
-				nets.unshift(net)
-				cur = net
-			end
-			return nets
-		end
-		
-		# fwdfill returns subnets between this net and the limit address.
-		# limit should be > net. will create subnets up to limit.
-		def fwdfill(limit)
-			nets = []
-			cur = self
-			while true do
-				net = cur.next
-				if (net == nil || net.network.addr >= limit)
-					break
-				end
-				nets.push(net)
-				cur = net
-			end
-			return nets
-		end
-		
+
 		# grow decreases the prefix length as much as possible without crossing a bit boundary.
 		def grow()
 			addr = self.network.addr
