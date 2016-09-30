@@ -29,7 +29,5 @@ I use the following conventions:
 
 
 # Status
-I am rewriting this from scratch. The original 1.x code is, quite frankly, horrible and embarrassing since I was
-new to Ruby when I wrote it. The 2.x code base will not be compatible with the 1.x branch and I plan to simplify things greatly.
-
-I am currently wrapping up with the IPv4 portion of the library. I will port the rest as time allows.
+Rewrite complete. I plan to test a bit more internally to make sure I have things the way I want them before releasing
+as 2.0.
