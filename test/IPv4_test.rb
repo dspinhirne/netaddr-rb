@@ -33,6 +33,15 @@ class TestIPv4 < Test::Unit::TestCase
 		assert_equal(0, ip.cmp(ip4))
 	end
 	
+	def test_multicast_mac
+		assert_equal(0, NetAddr::IPv4.parse("223.255.255.255").multicast_mac.addr)
+		assert_equal("01-00-5e-00-00-00", NetAddr::IPv4.parse("224.0.0.0").multicast_mac.to_s)
+		assert_equal("01-00-5e-02-03-05", NetAddr::IPv4.parse("230.2.3.5").multicast_mac.to_s)
+		assert_equal("01-00-5e-13-12-17", NetAddr::IPv4.parse("235.147.18.23").multicast_mac.to_s)
+		assert_equal("01-00-5e-7f-ff-ff", NetAddr::IPv4.parse("239.255.255.255").multicast_mac.to_s)
+		assert_equal(0, NetAddr::IPv4.parse("240.0.0.0").multicast_mac.addr)
+	end
+	
 	def test_next
 		assert_equal("255.255.255.255", NetAddr::IPv4.parse("255.255.255.254").next().to_s)
 		assert_nil(NetAddr::IPv4.parse("255.255.255.255").next())

@@ -64,6 +64,11 @@ class NetAddrExamples < Test::Unit::TestCase
 			assert_equal(expect[i],net.to_s)
 			i += 1
 		end
+		
+		puts "\nThe multicast mac-address for 235.147.18.23 is:"
+		mac = NetAddr::IPv4.parse("235.147.18.23").multicast_mac.to_s
+		assert_equal("01-00-5e-13-12-17", mac)
+		puts "  " + mac
 	end
 	
 	# IPv6
@@ -120,6 +125,13 @@ class NetAddrExamples < Test::Unit::TestCase
 			assert_equal(expect[i],net.to_s)
 			i += 1
 		end
+		
+		puts "\nThe IPv6 address for mac-address aa-bb-cc-dd-ee-ff within network fe80::/64 is:"
+		net = NetAddr::IPv6Net.parse("fe80::/64")
+		eui = NetAddr::EUI48.parse("aa-bb-cc-dd-ee-ff").to_eui64
+		ip = eui.to_ipv6(net)
+		assert_equal("fe80::a8bb:ccff:fedd:eeff",ip.to_s)
+		puts "  " + ip.to_s
 	end
 	
 end
