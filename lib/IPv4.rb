@@ -40,6 +40,17 @@ module NetAddr
 			return 0
 		end
 		
+		# multicast_mac returns the EUI48 multicast mac-address for this IP.
+		# It will return the zero address for IPs outside of the multicast range 224.0.0.0/4.
+		def multicast_mac
+			mac = 0
+			if (@addr&0xf0000000 == 0xe0000000) # within 224.0.0.0/4 ?
+				# map lower 23-bits of ip to 01:00:5e:00:00:00
+				mac = (@addr&0x007fffff) | 0x01005e000000
+			end
+			return EUI48.new(mac)
+		end
+		
 		# next returns the next consecutive IPv4 or nil if the address space is exceeded
 		def next()
 			if (self.addr == NetAddr::F32)

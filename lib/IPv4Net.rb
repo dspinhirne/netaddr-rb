@@ -84,7 +84,7 @@ module NetAddr
 		
 		# next returns the next largest consecutive IP network or nil if the end of the address space is reached.
 		def next()
-			net = self.nth_sib(1,false)
+			net = self.nth_next_sib(1)
 			if (!net)
 				return nil
 			end
@@ -93,7 +93,7 @@ module NetAddr
 		
 		# next_sib returns the network immediately following this one or nil if the end of the address space is reached.
 		def next_sib()
-			self.nth_sib(1,false)
+			self.nth_next_sib(1)
 		end
 		
 		# nth returns the IPv4 at the given index.
@@ -117,18 +117,24 @@ module NetAddr
 				return nil
 			end
 			sub0 = IPv4Net.new(self.network, Mask32.new(prefix_len))
-			return sub0.nth_sib(index,false)
+			return sub0.nth_next_sib(index)
 		end
 		
 		# prev returns the previous largest consecutive IP network or nil if this is 0.0.0.0.
 		def prev()
 			net = self.grow
-			return net.nth_sib(1,true)
+			return net.prev_sib
 		end
 		
 		# prev_sib returns the network immediately preceding this one or nil if this network is 0.0.0.0.
 		def prev_sib()
-			self.nth_sib(1,true)
+			if (self.network.addr == 0)
+				return nil
+			end
+			
+			shift = 32 - self.netmask.prefix_len
+			addr = ((self.network.addr>>shift) - 1) << shift
+			return IPv4Net.new(IPv4.new(addr), self.netmask)
 		end
 		
 		# rel determines the relationship to another IPv4Net. Retuns:
@@ -219,28 +225,17 @@ module NetAddr
 			end
 			return IPv4Net.new(IPv4.new(addr),Mask32.new(prefix_len))
 		end
-
-		# nth_sib returns the nth next sibling network or nil if address space exceeded.
-		# nth_sib will return the nth previous sibling if prev is true
-		def nth_sib(nth,prev)
+		
+		# nth_next_sib returns the nth next sibling network or nil if address space exceeded.
+		def nth_next_sib(nth)
 			if (nth < 0)
 				return nil
 			end
 			
-			addr = 0
-			# right shift by # of bits of host portion of address, add nth.
-			# and left shift back. this is the sibling network.
 			shift = 32 - self.netmask.prefix_len
-			if (prev)
-				addr = ((self.network.addr>>shift) - nth) << shift
-				if addr < 0
-					return nil
-				end
-			else
-				addr = ((self.network.addr>>shift) + nth) << shift
-				if addr > NetAddr::F32
-					return nil
-				end
+			addr = ((self.network.addr>>shift) + nth) << shift
+			if addr > NetAddr::F32
+				return nil
 			end
 			return IPv4Net.new(IPv4.new(addr), self.netmask)
 		end

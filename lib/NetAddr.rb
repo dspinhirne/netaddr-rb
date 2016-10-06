@@ -1,3 +1,5 @@
+require_relative "EUI48.rb"
+require_relative "EUI64.rb"
 require_relative "IPv4.rb"
 require_relative "IPv4Net.rb"
 require_relative "IPv6.rb"
