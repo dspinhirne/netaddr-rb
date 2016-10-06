@@ -20,7 +20,7 @@ module NetAddr
 		# Throws ValidationError on error.
 		def IPv6.parse(ip)
 			ip.strip!
-			i = NetAddr.parse_IPv6(ip)
+			i = Util.parse_IPv6(ip)
 			return IPv6.new(i)
 		end
 		

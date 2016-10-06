@@ -19,10 +19,10 @@ module NetAddr
 		
 		# Parse an EUI-64 string into an EUI64 type.
 		# This will successfully parse most of the typically used formats such as:
-		# 	- aa-bb-cc-dd-ee-ff-00-11
-		# 	- aa:bb:cc:dd:ee:ff:00:11
-		# 	- aabb.ccdd.eeff.0011
-		# 	- aabbccddeeff0011
+		# * aa-bb-cc-dd-ee-ff-00-11
+		# * aa:bb:cc:dd:ee:ff:00:11
+		# * aabb.ccdd.eeff.0011
+		# * aabbccddeeff0011
 		# 
 		# Although, in truth, its not picky about the exact format as long as
 		# it contains exactly 16 hex characters with the optional delimiting characters
@@ -37,7 +37,7 @@ module NetAddr
 			return EUI64.new(addr.to_i(16))
 		end
 		
-		# bytes returns a list containing each byte of the EUI64 as an Integer.
+		# bytes returns a list containing each byte of the EUI64 as a String.
 		def bytes()
 			return [
 				(@addr >> 56 & 0xff).to_s(16).rjust(2, "0"),

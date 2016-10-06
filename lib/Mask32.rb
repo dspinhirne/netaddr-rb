@@ -40,7 +40,7 @@ module NetAddr
 			# by creating a hostmask which covers the '0' bits of the mask. once we have
 			# separated the net vs host mask we xor them together. the result should be that
 			# all bits are now '1'. if not then we know we have an invalid netmask.
-			maskI = NetAddr.parse_IPv4(mask)
+			maskI = Util.parse_IPv4(mask)
 			prefix = 32
 			hostmask = 1
 			i = maskI 
@@ -62,7 +62,7 @@ module NetAddr
 		
 		# extended returns the Mask32 in extended format (eg. x.x.x.x)
 		def extended()
-			NetAddr.intToMask32(@mask)
+			Util.intToMask32(@mask)
 		end
 		
 		#cmp compares equality with another Mask32. Return:

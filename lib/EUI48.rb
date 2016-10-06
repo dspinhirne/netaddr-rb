@@ -20,10 +20,10 @@ module NetAddr
 		
 		# Parse an EUI-48 string into an EUI48 type.
 		# This will successfully parse most of the typically used formats such as:
-		# 	- aa-bb-cc-dd-ee-ff
-		# 	- aa:bb:cc:dd:ee:ff
-		# 	- aabb.ccdd.eeff
-		# 	- aabbccddeeff
+		# * aa-bb-cc-dd-ee-ff
+		# * aa:bb:cc:dd:ee:ff
+		# * aabb.ccdd.eeff
+		# * aabbccddeeff
 		# 
 		# Although, in truth, its not picky about the exact format as long as
 		# it contains exactly 12 hex characters with the optional delimiting characters
@@ -51,7 +51,7 @@ module NetAddr
 		end
 		
 		
-		# to_eui64 converts this EUI48 into an EUI64 by inserting 0xfffe between the OUI and EUI
+		# to_eui64 converts this EUI48 into an EUI64 by inserting 0xfffe between the first and last 24-bits of the address.
 		def to_eui64()
 			return EUI64.new((@addr & 0xffffff000000) << 16 | (@addr & 0x000000ffffff) | 0x000000fffe000000)
 		end

@@ -40,7 +40,7 @@ module NetAddr
 
 		# extended returns the IPv4Net in extended format (eg. x.x.x.x y.y.y.y)
 		def extended()
-			return @base.to_s + " " + NetAddr.int_to_IPv4(@m32.mask)
+			return @base.to_s + " " + Util.int_to_IPv4(@m32.mask)
 		end
 		
 		#cmp compares equality with another IPv4Net. Return:
@@ -48,7 +48,7 @@ module NetAddr
 		#* 0 if the two are equal
 		#* -1 if this IPv4Net is numerically less
 		#
-		#The comparasin is initially performed on using the cmp() method of the network address, however, in cases where the network #addresses are identical then the netmasks will be compared with the cmp() method of the netmask. 
+		#The comparison is initially performed on using the cmp() method of the network address, however, in cases where the network #addresses are identical then the netmasks will be compared with the cmp() method of the netmask. 
 		def cmp(other)
 			if (!other.kind_of?(IPv4Net))
 				raise ArgumentError, "Expected an IPv4Net object for 'other' but got a #{other.class}."
@@ -63,8 +63,8 @@ module NetAddr
 		# fill returns a copy of the given Array, stripped of any networks which are not subnets of this IPv4Net
 		# and with any missing gaps filled in.
 		def fill(list)
-			list = NetAddr.filter_IPv4Net(list)
-			return NetAddr.fill(self,list)
+			list = Util.filter_IPv4Net(list)
+			return Util.fill(self,list)
 		end
 		
 		# netmask returns the Mask32 object representing the netmask for this network
@@ -137,7 +137,7 @@ module NetAddr
 			return IPv4Net.new(IPv4.new(addr), self.netmask)
 		end
 		
-		# rel determines the relationship to another IPv4Net. Retuns:
+		# rel determines the relationship to another IPv4Net. Returns:
 		# * 1 if this IPv4Net is the supernet of other
 		# * 0 if the two are equal
 		# * -1 if this IPv4Net is a subnet of other

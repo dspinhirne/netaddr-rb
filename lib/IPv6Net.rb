@@ -44,7 +44,7 @@ module NetAddr
 		#* 0 if the two are equal
 		#* -1 if this IPv6Net is numerically less
 		#
-		#The comparasin is initially performed on using the cmp() method of the network address, however, in cases where the network #addresses are identical then the netmasks will be compared with the cmp() method of the netmask. 
+		#The comparison is initially performed on using the cmp() method of the network address, however, in cases where the network #addresses are identical then the netmasks will be compared with the cmp() method of the netmask. 
 		def cmp(other)
 			if (!other.kind_of?(IPv6Net))
 				raise ArgumentError, "Expected an IPv6Net object for 'other' but got a #{other.class}."
@@ -59,8 +59,8 @@ module NetAddr
 		# fill returns a copy of the given Array, stripped of any networks which are not subnets of this IPv6Net
 		# and with any missing gaps filled in.
 		def fill(list)
-			list = NetAddr.filter_IPv6Net(list)
-			return NetAddr.fill(self,list)
+			list = Util.filter_IPv6Net(list)
+			return Util.fill(self,list)
 		end
 		
 		#len returns the number of IP addresses in this network. It will return 0 for /0 networks.
@@ -136,7 +136,7 @@ module NetAddr
 			return IPv6Net.new(IPv6.new(addr), self.netmask)
 		end
 		
-		# rel determines the relationship to another IPv6Net. Retuns:
+		# rel determines the relationship to another IPv6Net. Returns:
 		# * 1 if this IPv6Net is the supernet of other
 		# * 0 if the two are equal
 		# * -1 if this IPv6Net is a subnet of other

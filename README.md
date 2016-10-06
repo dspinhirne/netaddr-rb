@@ -1,9 +1,13 @@
 # netaddr
 A Ruby library for performing calculations on IPv4 and IPv6 subnets. There is also limited support for EUI addresses.
 
-I originally created 1.x branch back in 2007 out of the need for a tool which I could use to track an
-inventory of constantly changing IP subnets. The 2.x branch is a complete rewrite of 1.x and
-is completely incompatible.
+### Version 1.x
+The original netaddr which I created way back in 2007. My use case then was creating an internal IPAM system
+for Rackspace.
+
+### Version 2.x
+A complete rewrite and totally incompatible with 1.x. My main motivation now is to reduce bug reports
+resulting from the poor code quality of 1.x.
 
 
 # Building
