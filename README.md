@@ -27,7 +27,3 @@ I use the following conventions:
 * I use tabs for indention since tabs make it really easy to adjust indention widths on the fly.
 * I do not follow rigid limits on line lengths. My editor auto-wraps so I add a line break where it feels appropriate.
 * I'm not a fan of obfuscation. I prefer clear code over fancy code.
-
-
-# Status
-Rewrite complete. I plan to test a bit more internally to make sure I have things the way I want them before releasing as 2.0.
