@@ -215,7 +215,7 @@ module NetAddr
 			upHalf = halves[0].split(":")
 			loHalf = halves[1].split(":")
 			numWords = upHalf.length + loHalf.length
-			if (numWords > 6)
+			if (numWords > 8)
 				raise ValidationError, "#{ip} is too long."
 			end
 			words = upHalf

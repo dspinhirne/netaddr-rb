@@ -17,17 +17,28 @@ class TestIPv6 < Test::Unit::TestCase
 		assert_equal(0, NetAddr::IPv6.parse("::").addr)
 		assert_equal(1, NetAddr::IPv6.parse("::1").addr)
 		assert_equal(0xfe800000000000000000000000000000, NetAddr::IPv6.parse("fe80::").addr)
-		assert_equal(NetAddr::F128, NetAddr::IPv6.parse("ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff").addr)
 		
 		assert_raise(NetAddr::ValidationError){ NetAddr::IPv6.parse("fe80::1::") }
-		assert_raise(NetAddr::ValidationError){ NetAddr::IPv6.parse("0:0:0:0:0:0:0:0:1") }
 		assert_raise(NetAddr::ValidationError){ NetAddr::IPv6.parse("::fe80::") }
-		assert_raise(NetAddr::ValidationError){ NetAddr::IPv6.parse("::0:0:0:0:0:0:1") }
-		assert_raise(NetAddr::ValidationError){ NetAddr::IPv6.parse("1:1:1:1:1:1:1::") }
-		assert_raise(NetAddr::ValidationError){ NetAddr::IPv6.parse("1:1:1:1:1:1:1::") }
+		assert_raise(NetAddr::ValidationError){ NetAddr::IPv6.parse("0:0:0:0:0:0:0:0:1") }
+		assert_equal(1, NetAddr::IPv6.parse("::0:0:0:0:0:0:1").addr)
+		assert_equal(0x00010002000300040005000600070008, NetAddr::IPv6.parse("1:2:3:4:5:6:7:8").addr)
+		assert_equal(0x00010002000300040005000600070000, NetAddr::IPv6.parse("1:2:3:4:5:6:7::").addr)
+		assert_equal(0x00010002000300040005000600000000, NetAddr::IPv6.parse("1:2:3:4:5:6::").addr)
+		assert_equal(0x00010002000300040005000000000000, NetAddr::IPv6.parse("1:2:3:4:5::").addr)
+		assert_equal(0x00010002000300040000000000000000, NetAddr::IPv6.parse("1:2:3:4::").addr)
+		assert_equal(0x00010002000300000000000000000000, NetAddr::IPv6.parse("1:2:3::").addr)
+		assert_equal(0x00010002000000000000000000000000, NetAddr::IPv6.parse("1:2::").addr)
+		assert_equal(0x00010000000000000000000000000000, NetAddr::IPv6.parse("1::").addr)
+		assert_equal(0x00000000000000000000000000000001, NetAddr::IPv6.parse("::1").addr)
+		assert_equal(0x00000000000000000000000000010002, NetAddr::IPv6.parse("::1:2").addr)
+		assert_equal(0x00000000000000000000000100020003, NetAddr::IPv6.parse("::1:2:3").addr)
+		assert_equal(0x00000000000000000001000200030004, NetAddr::IPv6.parse("::1:2:3:4").addr)
+		assert_equal(0x00000000000000010002000300040005, NetAddr::IPv6.parse("::1:2:3:4:5").addr)
+		assert_equal(0x00000000000100020003000400050006, NetAddr::IPv6.parse("::1:2:3:4:5:6").addr)
+		assert_equal(0x00000001000200030004000500060007, NetAddr::IPv6.parse("::1:2:3:4:5:6:7").addr)
 		assert_raise(NetAddr::ValidationError){ NetAddr::IPv6.parse("fec0") }
 		assert_raise(NetAddr::ValidationError){ NetAddr::IPv6.parse("fec0:::1") }
-		
 	end
 	
 	def test_cmp
