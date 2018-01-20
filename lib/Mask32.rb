@@ -1,6 +1,6 @@
 module NetAddr
 	
-	#Mask32 represents an 32-bit netmask. 
+	#Mask32 represents a 32-bit netmask. 
 	class Mask32
 		# mask is the Integer representation of this netmask
 		attr_reader :mask

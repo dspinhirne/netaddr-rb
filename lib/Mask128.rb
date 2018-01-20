@@ -1,6 +1,6 @@
 module NetAddr
 	
-	#Mask128 represents an 128-bit netmask. 
+	#Mask128 represents a 128-bit netmask. 
 	class Mask128
 		# mask is the Integer representation of this netmask
 		attr_reader :mask
@@ -8,7 +8,7 @@ module NetAddr
 		# prefix_len is the Integer prefix length of this netmask
 		attr_reader :prefix_len
 		
-		# Create a Mask128 from an Integer prefix length. Valid values are 0-32.
+		# Create a Mask128 from an Integer prefix length. Valid values are 0-128.
 		# Throws ValidationError on error.
 		def initialize(prefix_len)
 			if (!prefix_len.kind_of?(Integer))

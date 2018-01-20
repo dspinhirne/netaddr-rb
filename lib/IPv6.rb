@@ -5,7 +5,7 @@ module NetAddr
 		# addr is the Integer representation of this IP address
 		attr_reader :addr
 		
-		#Create an IPv6 from an Integer. Must be between 0 and 2**32-1.
+		#Create an IPv6 from an Integer. Must be between 0 and 2**128-1.
 		#Throws ValidationError on error.
 		def initialize(i)
 			if (!i.kind_of?(Integer))
