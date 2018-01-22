@@ -2,8 +2,8 @@
 # install with: netaddr*.gem
 Gem::Specification.new do |s|
 	s.name      =   "netaddr"
-	s.version   =   "2.0"
-	s.date      =   "2018-01-19"
+	s.version   =   "2.0.1"
+	s.date      =   "2018-01-22"
 	s.author    =   "Dustin Spinhirne"
 	s.summary   =   "A Ruby library for performing calculations on IPv4 and IPv6 subnets."
 	s.homepage  =   "https://github.com/dspinhirne/netaddr-rb"
