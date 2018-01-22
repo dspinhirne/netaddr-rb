@@ -1,6 +1,6 @@
 #!/usr/bin/ruby
 
-require_relative "../lib/NetAddr.rb"
+require_relative "../lib/netaddr.rb"
 require 'test/unit'
 
 class TestIPv6Net < Test::Unit::TestCase

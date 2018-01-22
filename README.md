@@ -11,7 +11,7 @@ A complete rewrite and totally incompatible with 1.x. My main motivation now is 
 # Building
 To run unit tests, execute the following from the top level directory
 
-	ruby test/runAll.rb
+	ruby test/run_all.rb
 
 To build the gem, execute the following from the top level directory
 

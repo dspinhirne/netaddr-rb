@@ -1,12 +1,12 @@
-require_relative "EUI48.rb"
-require_relative "EUI64.rb"
-require_relative "IPv4.rb"
-require_relative "IPv4Net.rb"
-require_relative "IPv6.rb"
-require_relative "IPv6Net.rb"
-require_relative "Mask32.rb"
-require_relative "Mask128.rb"
-require_relative "Util.rb"
+require_relative "eui48.rb"
+require_relative "eui64.rb"
+require_relative "ipv4.rb"
+require_relative "ipv4net.rb"
+require_relative "ipv6.rb"
+require_relative "ipv6net.rb"
+require_relative "mask32.rb"
+require_relative "mask128.rb"
+require_relative "util.rb"
 
 module NetAddr
 	# Constants
