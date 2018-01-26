@@ -66,6 +66,11 @@ module NetAddr
 			return IPv6.new(self.addr - 1)
 		end
 		
+		# to_net returns the IPv6 as a IPv6Net
+		def to_net()
+			NetAddr::IPv6Net.new(self,nil)
+		end
+		
 		# to_s returns the IPv6 as a String in zero-compressed format (per rfc5952).
 		def to_s()
 			hexStr = ["","","","","","","",""]

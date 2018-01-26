@@ -26,7 +26,7 @@ class TestIPv4 < Test::Unit::TestCase
 	def test_cmp
 		ip = NetAddr::IPv4.parse("128.0.0.1")
 		ip2 = NetAddr::IPv4.parse("128.0.0.0")
-		ip3 =NetAddr::IPv4.parse("128.0.0.2")
+		ip3 = NetAddr::IPv4.parse("128.0.0.2")
 		ip4 = NetAddr::IPv4.parse("128.0.0.1")
 		assert_equal(1, ip.cmp(ip2))
 		assert_equal(-1, ip.cmp(ip3))
@@ -50,5 +50,11 @@ class TestIPv4 < Test::Unit::TestCase
 	def test_prev
 		assert_equal("0.0.0.0", NetAddr::IPv4.parse("0.0.0.1").prev().to_s)
 		assert_nil(NetAddr::IPv4.parse("0.0.0.0").prev())
+	end
+	
+	def test_to_net
+		ip = NetAddr::IPv4.parse("192.168.1.1")
+		net = NetAddr::IPv4Net.parse("192.168.1.1")
+		assert_equal(0, net.cmp(ip.to_net()))
 	end
 end

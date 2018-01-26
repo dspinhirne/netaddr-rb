@@ -67,6 +67,11 @@ module NetAddr
 			return IPv4.new(self.addr - 1)
 		end
 		
+		# to_net returns the IPv4 as a IPv4Net
+		def to_net()
+			NetAddr::IPv4Net.new(self,nil)
+		end
+		
 		# to_s returns the IPv4 as a String
 		def to_s()
 			Util.int_to_IPv4(@addr)

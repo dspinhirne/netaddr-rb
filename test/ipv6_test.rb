@@ -67,6 +67,12 @@ class TestIPv6 < Test::Unit::TestCase
 		assert_nil(NetAddr::IPv6.parse("::").prev())
 	end
 	
+	def test_to_net
+		ip = NetAddr::IPv6.parse("1::")
+		net = NetAddr::IPv6Net.parse("1::")
+		assert_equal(0, net.cmp(ip.to_net()))
+	end
+	
 	def test_to_s
 		assert_equal("::", NetAddr::IPv6.parse("0:0:0:0:0:0:0:0").to_s)
 		assert_equal("1::", NetAddr::IPv6.parse("1:0:0:0:0:0:0:0").to_s)
