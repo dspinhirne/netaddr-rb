@@ -42,13 +42,20 @@ class NetAddrExamples < Test::Unit::TestCase
 			puts "  " + ip.to_s
 		end
 		
-		puts "\nDoes 10.0.0.10 belong to the 10.0.0.8/29 subnet?"
+		puts "\nDoes 10.0.0.7 belong to the 10.0.0.8/29 subnet?"
 		subnet29 = NetAddr::IPv4Net.parse("10.0.0.8/29")
-		if subnet29.rel(NetAddr::IPv4Net.parse("10.0.0.10")) == 1
+		if subnet29.contains(NetAddr::IPv4.parse("10.0.0.7"))
 			puts " yes"
 		else
 			puts " no"
 		end
+		
+		puts "\nDoes 10.0.0.10 belong to the 10.0.0.8/29 subnet?"
+		if subnet29.contains(NetAddr::IPv4.parse("10.0.0.10"))
+			puts " yes"
+		else
+			puts " no"
+		end 
 		
 		puts "\nGiven the 3rd /30 of 10.0.0.0/24, fill in the holes:"
 		expect = ["10.0.0.0/29","10.0.0.8/30","10.0.0.12/30","10.0.0.16/28","10.0.0.32/27","10.0.0.64/26","10.0.0.128/25"]

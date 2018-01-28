@@ -56,6 +56,17 @@ module NetAddr
 			return self.netmask.cmp(other.netmask)
 		end
 		
+		#contains returns true if the IPv6Net contains the IPv6
+		def contains(ip)
+			if (!ip.kind_of?(IPv6))
+				raise ArgumentError, "Expected an IPv6 object for 'ip' but got a #{ip.class}."
+			end
+			if (@base.addr == ip.addr & @m128.mask)
+				return true
+			end
+			return false
+		end
+		
 		# fill returns a copy of the given Array, stripped of any networks which are not subnets of this IPv6Net
 		# and with any missing gaps filled in.
 		def fill(list)

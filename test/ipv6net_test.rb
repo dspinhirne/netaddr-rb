@@ -35,6 +35,17 @@ class TestIPv6Net < Test::Unit::TestCase
 		assert_equal(1, net1.cmp(net4)) # ip eq, mask greater
 		assert_equal(0, net1.cmp(net5)) # eq
 	end
+	
+	def test_contains
+		net = NetAddr::IPv6Net.parse("1:8::/29")
+		ip1 = NetAddr::IPv6.parse("1:f::")
+		ip2 = NetAddr::IPv6.parse("1:10::")
+		ip3 = NetAddr::IPv6.parse("1:7::")
+		
+		assert_equal(true, net.contains(ip1))
+		assert_equal(false, net.contains(ip2))
+		assert_equal(false, net.contains(ip3))
+	end
 
 	def test_fill
 		parent = NetAddr::IPv6Net.parse("ff00::/8")

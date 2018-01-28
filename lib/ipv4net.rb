@@ -60,6 +60,17 @@ module NetAddr
 			return self.netmask.cmp(other.netmask)
 		end
 		
+		#contains returns true if the IPv4Net contains the IPv4
+		def contains(ip)
+			if (!ip.kind_of?(IPv4))
+				raise ArgumentError, "Expected an IPv4 object for 'ip' but got a #{ip.class}."
+			end
+			if (@base.addr == ip.addr & @m32.mask)
+				return true
+			end
+			return false
+		end
+		
 		# fill returns a copy of the given Array, stripped of any networks which are not subnets of this IPv4Net
 		# and with any missing gaps filled in.
 		def fill(list)
