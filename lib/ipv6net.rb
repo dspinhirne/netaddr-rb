@@ -79,6 +79,11 @@ module NetAddr
 			return self.netmask.len
 		end
 		
+		# long returns the IPv6Net as a string in long (uncompressed) format
+		def long()
+			return @base.long() + @m128.to_s
+		end
+		
 		# netmask returns the Mask128 object representing the netmask for this network
 		def netmask()
 			@m128

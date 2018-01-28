@@ -97,6 +97,9 @@ class NetAddrExamples < Test::Unit::TestCase
 		puts "\nRendering as a String: " + net.to_s
 		assert_equal("fec0::/62", net.to_s)
 		
+		puts "\nRendering as a String (long format): " + net.long
+		assert_equal("fec0:0000:0000:0000:0000:0000:0000:0000/62", net.long)
+		
 		puts "\nIterating its /64 subnets:"
 		expect = ["fec0::/64","fec0:0:0:1::/64","fec0:0:0:2::/64","fec0:0:0:3::/64"]
 		0.upto(net.subnet_count(64) - 1) do |i|
