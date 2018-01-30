@@ -43,12 +43,13 @@ module NetAddr
 			return @base.to_s + " " + Util.int_to_IPv4(@m32.mask)
 		end
 		
-		#cmp compares equality with another IPv4Net. Return:
-		#* 1 if this IPv4Net is numerically greater
-		#* 0 if the two are equal
-		#* -1 if this IPv4Net is numerically less
+		# cmp compares equality with another IPv4Net. Return:
+		# * 1 if this IPv4Net is numerically greater
+		# * 0 if the two are equal
+		# * -1 if this IPv4Net is numerically less
 		#
-		#The comparison is initially performed on using the cmp() method of the network address, however, in cases where the network #addresses are identical then the netmasks will be compared with the cmp() method of the netmask. 
+		# The comparison is initially performed on using the cmp() method of the network address, however, in cases where the network
+		# addresses are identical then the netmasks will be compared with the cmp() method of the netmask. 
 		def cmp(other)
 			if (!other.kind_of?(IPv4Net))
 				raise ArgumentError, "Expected an IPv4Net object for 'other' but got a #{other.class}."

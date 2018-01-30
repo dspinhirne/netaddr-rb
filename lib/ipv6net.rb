@@ -24,7 +24,7 @@ module NetAddr
 			@base = IPv6.new(ip.addr & m128.mask)
 		end
 		
-		# parse will create an IPv6Net from its string representation. Will default to a /64 netmask if not specified.
+		# parse will create an IPv6Net from its string representation. A default netmask will be used if not specified.
 		# Throws ValidationError on error.
 		def IPv6Net.parse(net)
 			m128 = nil
@@ -39,12 +39,13 @@ module NetAddr
 			return IPv6Net.new(ip,m128)
 		end
 		
-		#cmp compares equality with another IPv6Net. Return:
-		#* 1 if this IPv6Net is numerically greater
-		#* 0 if the two are equal
-		#* -1 if this IPv6Net is numerically less
+		# cmp compares equality with another IPv6Net. Return:
+		# * 1 if this IPv6Net is numerically greater
+		# * 0 if the two are equal
+		# * -1 if this IPv6Net is numerically less
 		#
-		#The comparison is initially performed on using the cmp() method of the network address, however, in cases where the network #addresses are identical then the netmasks will be compared with the cmp() method of the netmask. 
+		# The comparison is initially performed on using the cmp() method of the network address, however, in cases where the network
+		# addresses are identical then the netmasks will be compared with the cmp() method of the netmask. 
 		def cmp(other)
 			if (!other.kind_of?(IPv6Net))
 				raise ArgumentError, "Expected an IPv6Net object for 'other' but got a #{other.class}."
@@ -132,13 +133,13 @@ module NetAddr
 			return sub0.nth_next_sib(index)
 		end
 		
-		# prev returns the previous largest consecutive IP network or nil if this is 0.0.0.0.
+		# prev returns the previous largest consecutive IP network or nil if this is ::.
 		def prev()
 			net = self.grow
 			return net.prev_sib
 		end
 		
-		# prev_sib returns the network immediately preceding this one or nil if this network is 0.0.0.0.
+		# prev_sib returns the network immediately preceding this one or nil if this network is ::.
 		def prev_sib()
 			if (self.network.addr == 0)
 				return nil

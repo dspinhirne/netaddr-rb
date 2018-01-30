@@ -16,7 +16,7 @@ module NetAddr
 			@addr = i
 		end
 		
-		# parse will create an IPv6 from its string representation (ie. "192.168.1.1").
+		# parse will create an IPv6 from its string representation (ie. "1::").
 		# Throws ValidationError on error.
 		def IPv6.parse(ip)
 			ip.strip!
@@ -24,10 +24,10 @@ module NetAddr
 			return IPv6.new(i)
 		end
 		
-		#cmp compares equality with another IPv6. Return:
-		#* 1 if this IPv6 is numerically greater
-		#* 0 if the two are equal
-		#* -1 if this IPv6 is numerically less
+		# cmp compares equality with another IPv6. Return:
+		# * 1 if this IPv6 is numerically greater
+		# * 0 if the two are equal
+		# * -1 if this IPv6 is numerically less
 		def cmp(other)
 			if (!other.kind_of?(IPv6))
 				raise ArgumentError, "Expected an IPv6 object for 'other' but got a #{other.class}."
