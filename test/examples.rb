@@ -45,6 +45,13 @@ class NetAddrExamples < Test::Unit::TestCase
 			assert_equal(expect[i], ip.to_s)
 			puts "  " + ip.to_s
 		end
+
+		puts "\nIterating the host IPs of the /30"
+		expect = ["10.0.0.9","10.0.0.10"]
+		subnet30.each_host.with_index do |ip, i|
+			assert_equal(expect[i], ip.to_s)
+			puts "  " + ip.to_s
+		end
 		
 		puts "\nDoes 10.0.0.7 belong to the 10.0.0.8/29 subnet?"
 		subnet29 = NetAddr::IPv4Net.parse("10.0.0.8/29")
@@ -133,6 +140,13 @@ class NetAddrExamples < Test::Unit::TestCase
 		puts "\nIterating the IPs of the /126"
 		expect = ["fec0:0:0:2::","fec0:0:0:2::1","fec0:0:0:2::2","fec0:0:0:2::3"]
 		subnet126.each.with_index do |ip, i|
+			assert_equal(expect[i], ip.to_s)
+			puts "  " + ip.to_s
+		end
+
+		puts "\nIterating the host IPs of the /126"
+		expect = ["fec0:0:0:2::1","fec0:0:0:2::2"]
+		subnet126.each_host.with_index do |ip, i|
 			assert_equal(expect[i], ip.to_s)
 			puts "  " + ip.to_s
 		end
