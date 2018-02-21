@@ -1,3 +1,5 @@
+#!/usr/bin/env ruby
+
 #!/usr/bin/ruby
 
 require_relative "../lib/netaddr.rb"
