@@ -1,5 +1,8 @@
 # ruby gems 
 *.gem
+# Editor files
+*.swp
+*.swo
 
 #Personal task list
 tasks.md
