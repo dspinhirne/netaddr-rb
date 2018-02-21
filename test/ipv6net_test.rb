@@ -94,6 +94,11 @@ class TestIPv6Net < Test::Unit::TestCase
 		assert_equal("::1", NetAddr::IPv6Net.parse("::/127").nth(1).to_s)
 		assert_nil(NetAddr::IPv6Net.parse("::/127").nth(2))
 	end
+
+	def test_each
+		expect = ['::', '::1', '::2', '::3']
+		assert_equal(expect, NetAddr::IPv6Net.parse('::/126').each.map{|e| e.to_s})
+	end
 	
 	def test_nth_subnet
 		assert_equal("1::/30", NetAddr::IPv6Net.parse("1::/24").nth_subnet(30,0).to_s)
