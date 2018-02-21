@@ -23,6 +23,23 @@ module NetAddr
 			return self
 		end
 
+		# Yield of subnet of the given length and return self.
+		# Return an enumerator if no block are given.
+		# Never yield if prefix_len is invalid.
+		#
+		# arguments:
+		# * prefix_len prefix of the new network.
+		def each_subnet(prefix_len)
+			return to_enum(:each_subnet, prefix_len) unless block_given?
+			count = self.subnet_count(prefix_len)
+			unless count == 0 then
+				0.upto(count - 1) do |idx|
+					yield nth_subnet(prefix_len, idx)
+				end
+			end
+			return self
+		end
+
 	end # class IPNet
 
 end # module

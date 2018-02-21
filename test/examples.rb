@@ -23,8 +23,7 @@ class NetAddrExamples < Test::Unit::TestCase
 		
 		puts "\nIterating its /26 subnets:"
 		expect = ["10.0.0.0/26","10.0.0.64/26","10.0.0.128/26","10.0.0.192/26"]
-		0.upto(net.subnet_count(26) - 1) do |i|
-			subnet = net.nth_subnet(26,i)
+		net.each_subnet(26).with_index do |subnet, i|
 			assert_equal(expect[i], subnet.to_s)
 			puts "  " + subnet.to_s
 		end
@@ -113,8 +112,7 @@ class NetAddrExamples < Test::Unit::TestCase
 		
 		puts "\nIterating its /64 subnets:"
 		expect = ["fec0::/64","fec0:0:0:1::/64","fec0:0:0:2::/64","fec0:0:0:3::/64"]
-		0.upto(net.subnet_count(64) - 1) do |i|
-			subnet = net.nth_subnet(64,i)
+		net.each_subnet(64).with_index do |subnet, i|
 			assert_equal(expect[i], subnet.to_s)
 			puts "  " + subnet.to_s
 		end
