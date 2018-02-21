@@ -1,7 +1,9 @@
+require_relative 'ipnet.rb'
+
 module NetAddr
 	
 	#IPv6Net represents an IPv6 network. 
-	class IPv6Net
+	class IPv6Net < IPNet
 		
 		#arguments:
 		#* ip - an IPv6 object

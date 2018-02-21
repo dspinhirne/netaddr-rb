@@ -1,7 +1,9 @@
+require_relative 'ipnet.rb'
+
 module NetAddr
 	
 	#IPv4Net represents an IPv4 network. 
-	class IPv4Net
+	class IPv4Net < IPNet
 		
 		#arguments:
 		#* ip - an IPv4 object
