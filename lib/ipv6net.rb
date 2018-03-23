@@ -240,7 +240,6 @@ module NetAddr
 				prefix_len -= 1
 			end
 			
-			newNet = IPv6Net.new(IPv6.new(addr),Mask128.new(prefix_len))
 			return IPv6Net.new(IPv6.new(addr),Mask128.new(prefix_len))
 		end
 		
