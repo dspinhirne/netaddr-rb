@@ -111,6 +111,22 @@ class TestIPv4Net < Test::Unit::TestCase
 		assert_equal("1.1.1.1", NetAddr::IPv4Net.parse("1.1.1.0/26").nth(1).to_s)
 		assert_nil(NetAddr::IPv4Net.parse("1.1.1.0/26").nth(64))
 	end
+
+	def test_each
+		expect = ['1.1.1.0', '1.1.1.1', '1.1.1.2', '1.1.1.3']
+		assert_equal(expect, NetAddr::IPv4Net.parse("1.1.1.0/30").each.map{|e| e.to_s})
+	end
+
+	def test_each_host
+		expect = ['1.1.1.1', '1.1.1.2']
+		assert_equal(expect, NetAddr::IPv4Net.parse("1.1.1.0/30").each_host.map{|e| e.to_s})
+
+		expect = []
+		assert_equal(expect, NetAddr::IPv4Net.parse("1.1.1.0/31").each_host.map{|e| e.to_s})
+
+		expect = []
+		assert_equal(expect, NetAddr::IPv4Net.parse("1.1.1.0/32").each_host.map{|e| e.to_s})
+	end
 	
 	def test_nth_subnet
 		assert_equal("1.1.1.0/26", NetAddr::IPv4Net.parse("1.1.1.0/24").nth_subnet(26,0).to_s)
@@ -118,6 +134,17 @@ class TestIPv4Net < Test::Unit::TestCase
 		assert_nil(NetAddr::IPv4Net.parse("1.1.1.0/24").nth_subnet(26,4))
 		assert_nil(NetAddr::IPv4Net.parse("1.1.1.0/24").nth_subnet(26,-1))
 		assert_nil(NetAddr::IPv4Net.parse("1.1.1.0/24").nth_subnet(24,0))
+	end
+
+	def test_each_subnet
+		expect = ['1.1.1.0/26', '1.1.1.64/26', '1.1.1.128/26', '1.1.1.192/26']
+		assert_equal(expect, NetAddr::IPv4Net.parse("1.1.1.0/24").each_subnet(26).map{|e| e.to_s})
+
+		expect = []
+		assert_equal(expect, NetAddr::IPv4Net.parse("1.1.1.0/26").each_subnet(26).map{|e| e.to_s})
+
+		expect = []
+		assert_equal(expect, NetAddr::IPv4Net.parse("1.1.1.0/28").each_subnet(26).map{|e| e.to_s})
 	end
 	
 	def test_prev

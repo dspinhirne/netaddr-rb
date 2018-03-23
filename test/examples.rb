@@ -23,8 +23,7 @@ class NetAddrExamples < Test::Unit::TestCase
 		
 		puts "\nIterating its /26 subnets:"
 		expect = ["10.0.0.0/26","10.0.0.64/26","10.0.0.128/26","10.0.0.192/26"]
-		0.upto(net.subnet_count(26) - 1) do |i|
-			subnet = net.nth_subnet(26,i)
+		net.each_subnet(26).with_index do |subnet, i|
 			assert_equal(expect[i], subnet.to_s)
 			puts "  " + subnet.to_s
 		end
@@ -33,11 +32,22 @@ class NetAddrExamples < Test::Unit::TestCase
 		subnet30 = net.nth_subnet(30,2)
 		assert_equal("10.0.0.8/30", subnet30.to_s)
 		puts "  " + subnet30.to_s
+
+		puts "\nGet the first IP of the /30"
+		expect = '10.0.0.8'
+		ip = subnet30.nth(0)
+		assert_equal(expect, ip.to_s)
 		
 		puts "\nIterating the IPs of the /30"
 		expect = ["10.0.0.8","10.0.0.9","10.0.0.10","10.0.0.11"]
-		0.upto(subnet30.len - 1) do |i|
-			ip = subnet30.nth(i)
+		subnet30.each.with_index do |ip, i|
+			assert_equal(expect[i], ip.to_s)
+			puts "  " + ip.to_s
+		end
+
+		puts "\nIterating the host IPs of the /30"
+		expect = ["10.0.0.9","10.0.0.10"]
+		subnet30.each_host.with_index do |ip, i|
 			assert_equal(expect[i], ip.to_s)
 			puts "  " + ip.to_s
 		end
@@ -102,8 +112,7 @@ class NetAddrExamples < Test::Unit::TestCase
 		
 		puts "\nIterating its /64 subnets:"
 		expect = ["fec0::/64","fec0:0:0:1::/64","fec0:0:0:2::/64","fec0:0:0:3::/64"]
-		0.upto(net.subnet_count(64) - 1) do |i|
-			subnet = net.nth_subnet(64,i)
+		net.each_subnet(64).with_index do |subnet, i|
 			assert_equal(expect[i], subnet.to_s)
 			puts "  " + subnet.to_s
 		end
@@ -120,7 +129,26 @@ class NetAddrExamples < Test::Unit::TestCase
 			assert_equal(expect[i], ip.to_s)
 			puts "  " + ip.to_s
 		end
-		
+
+		puts "\nIts first /126 subnet:"
+		subnet126 = subnet64.nth_subnet(126,0)
+		assert_equal("fec0:0:0:2::/126", subnet126.to_s)
+		puts "  " + subnet126.to_s
+
+		puts "\nIterating the IPs of the /126"
+		expect = ["fec0:0:0:2::","fec0:0:0:2::1","fec0:0:0:2::2","fec0:0:0:2::3"]
+		subnet126.each.with_index do |ip, i|
+			assert_equal(expect[i], ip.to_s)
+			puts "  " + ip.to_s
+		end
+
+		puts "\nIterating the host IPs of the /126"
+		expect = ["fec0:0:0:2::1","fec0:0:0:2::2"]
+		subnet126.each_host.with_index do |ip, i|
+			assert_equal(expect[i], ip.to_s)
+			puts "  " + ip.to_s
+		end
+
 		puts "\nGiven the 3rd /64 of fec0::/62, fill in the holes:"
 		expect = ["fec0::/63", "fec0:0:0:2::/64","fec0:0:0:3::/64"]
 		i = 0
