@@ -5,9 +5,9 @@ require 'test/unit'
 
 class TestNetAddr < Test::Unit::TestCase
 
-	def test_parse
-		assert_equal("128.0.0.1", NetAddr.parse("128.0.0.1").to_s)
-		assert_equal("1::1", NetAddr.parse("1::1").to_s)
+	def test_parse_ip
+		assert_equal("128.0.0.1", NetAddr.parse_ip("128.0.0.1").to_s)
+		assert_equal("1::1", NetAddr.parse_ip("1::1").to_s)
 	end
 	
 	def test_parse_net

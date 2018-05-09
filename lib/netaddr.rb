@@ -37,14 +37,14 @@ module NetAddr
 	end
 	module_function :ipv4_prefix_len
 	
-	## parse parses a string into an IPv4 or IPv6
-	def parse(ip)
+	## parse_ip parses a string into an IPv4 or IPv6
+	def parse_ip(ip)
 		if (ip.include?(".")) # ipv4
 			return IPv4.parse(ip)
 		end
 		return IPv6.parse(ip)
 	end
-	module_function :parse
+	module_function :parse_ip
 	
 	## parse_net parses a string into an IPv4Net or IPv6Net
 	def parse_net(net)
