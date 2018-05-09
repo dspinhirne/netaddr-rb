@@ -224,6 +224,11 @@ module NetAddr
 			return @base.to_s + @m128.to_s
 		end
 		
+		# version returns "6" for IPv6
+		def version()
+			return 6
+		end
+		
 		
 		protected
 

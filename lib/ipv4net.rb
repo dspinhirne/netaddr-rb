@@ -220,6 +220,11 @@ module NetAddr
 			return @base.to_s + @m32.to_s
 		end
 		
+		# version returns "4" for IPv4
+		def version()
+			return 4
+		end
+		
 		
 		protected
 

@@ -5,6 +5,16 @@ require 'test/unit'
 
 class TestNetAddr < Test::Unit::TestCase
 
+	def test_parse
+		assert_equal("128.0.0.1", NetAddr.parse("128.0.0.1").to_s)
+		assert_equal("1::1", NetAddr.parse("1::1").to_s)
+	end
+	
+	def test_parse_net
+		assert_equal("128.0.0.1/32", NetAddr.parse_net("128.0.0.1/32").to_s)
+		assert_equal("1::/24", NetAddr.parse_net("1::1/24").to_s)
+	end
+	
 	def test_ipv4_prefix_len
 		assert_equal(32,NetAddr.ipv4_prefix_len(1))
 		assert_equal(27,NetAddr.ipv4_prefix_len(30))

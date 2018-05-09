@@ -110,6 +110,11 @@ module NetAddr
 			return hexStr.join(":")
 		end
 		
+		# version returns "6" for IPv6
+		def version()
+			return 6
+		end
+		
 	end # end class IPv6
 	
 end # end module

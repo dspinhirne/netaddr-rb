@@ -77,6 +77,11 @@ module NetAddr
 			Util.int_to_IPv4(@addr)
 		end
 		
+		# version returns "4" for IPv4
+		def version()
+			return 4
+		end
+		
 	end # end class IPv4
 	
 end # end module

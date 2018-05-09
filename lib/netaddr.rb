@@ -37,6 +37,24 @@ module NetAddr
 	end
 	module_function :ipv4_prefix_len
 	
+	## parse parses a string into an IPv4 or IPv6
+	def parse(ip)
+		if (ip.include?(".")) # ipv4
+			return IPv4.parse(ip)
+		end
+		return IPv6.parse(ip)
+	end
+	module_function :parse
+	
+	## parse_net parses a string into an IPv4Net or IPv6Net
+	def parse_net(net)
+		if (net.include?(".")) # ipv4
+			return IPv4Net.parse(net)
+		end
+		return IPv6Net.parse(net)
+	end
+	module_function :parse_net
+	
 	# sort_IPv4 sorts a list of IPv4 objects in ascending order.
 	# It will return a new list with any non IPv4 objects removed.
 	def sort_IPv4(list)
