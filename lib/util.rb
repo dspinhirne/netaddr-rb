@@ -23,29 +23,27 @@ module NetAddr
 	
 	# discard_subnets returns a copy of the IPv4NetList with any entries which are subnets of other entries removed.
 	def Util.discard_subnets(list)
-		unrelated = []
-		supernets = []
+		keepers = []
 		last = list[list.length-1]
+		keep_last = true
 		list.each do |net|
 			rel = last.rel(net)
-			if (!rel)
-				unrelated.push(net)
-			elsif (rel == -1) # last is subnet of net
-				supernets.push(net)
+			if (!rel) # keep unrelated nets
+				keepers.push(net)
+			elsif (rel == -1) # keep supernets, but do not keep last
+				keepers.push(net)
+				keep_last = false
 			end
 		end
 		
-		cleaned = []
-		if (supernets.length > 0)
-			cleaned = discard_subnets(supernets)
-		else
-			cleaned.push(last)
+		# recursively clean up keepers
+		if (keepers.length > 0)
+			keepers = discard_subnets(keepers)
 		end
-		
-		if (unrelated.length > 0)
-			cleaned.concat( discard_subnets(unrelated) )
+		if keep_last
+			keepers.unshift(last)
 		end
-		return cleaned
+		return keepers
 	end
 	
 	# fill returns a copy of the given Array, stripped of any networks which are not subnets of ipnet

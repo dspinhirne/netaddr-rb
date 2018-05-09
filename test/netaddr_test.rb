@@ -67,6 +67,17 @@ class TestNetAddr < Test::Unit::TestCase
 			assert_equal(expect[i],net.to_s)
 			i += 1
 		end
+		
+		nets = []
+		["10.0.0.0/26","10.0.0.64/26","10.0.0.0/24","10.0.0.192/26","10.0.0.128/26"].each do |net| # test out of order
+			nets.push(NetAddr::IPv4Net.parse(net))
+		end
+		expect = ["10.0.0.0/24"]
+		i = 0
+		NetAddr.summ_IPv4Net(nets).each do |net|
+			assert_equal(expect[i],net.to_s)
+			i += 1
+		end
 	end
 	
 	def test_sort_IPv6
