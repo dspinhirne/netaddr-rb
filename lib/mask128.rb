@@ -30,7 +30,9 @@ module NetAddr
 			if (mask.start_with?("/")) # cidr format
 				mask = mask[1..-1] # remove "/"
 			end
-			return Mask128.new(mask.to_i)
+			return Mask128.new(Integer(mask))
+		rescue ArgumentError
+			raise ValidationError, "#{mask} is not valid integer."
 		end
 		
 		#cmp compares equality with another Mask128. Return:
