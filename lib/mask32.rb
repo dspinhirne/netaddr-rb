@@ -62,7 +62,7 @@ module NetAddr
 		
 		# extended returns the Mask32 in extended format (eg. x.x.x.x)
 		def extended()
-			Util.intToMask32(@mask)
+			Util.int_to_IPv4(@mask)
 		end
 		
 		#cmp compares equality with another Mask32. Return:

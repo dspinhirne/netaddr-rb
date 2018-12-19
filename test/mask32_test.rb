@@ -34,6 +34,11 @@ class TestMask32 < Test::Unit::TestCase
 		assert_equal(0, m.cmp(m4))
 	end
 	
+	def test_extended
+		m32 = NetAddr::Mask32.new(24)
+		assert_equal("255.255.255.0", m32.extended)
+	end
+	
 	def test_len
 		m = NetAddr::Mask32.new(24)
 		assert_equal(256, m.len())
