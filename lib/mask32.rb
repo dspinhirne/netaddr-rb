@@ -28,9 +28,15 @@ module NetAddr
 		def Mask32.parse(mask)
 			mask.strip!
 			if (mask.start_with?("/")) # cidr format
-				return Mask32.new(mask[1..-1].to_i) # remove "/"
-			elsif (!mask.include?("."))
-				return Mask32.new(mask.to_i)
+				mask = mask[1..-1] # remove "/"
+			end
+
+			if (!mask.include?("."))
+				begin
+					return Mask32.new(Integer(mask))
+				rescue ArgumentError
+					raise ValidationError, "#{mask} is not valid integer."
+				end
 			end
 			
 			# for extended netmask
