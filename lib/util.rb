@@ -164,8 +164,7 @@ module NetAddr
 			raise ValidationError, "#{ip} contains invalid characters."
 		end
 		
-		ip.strip!
-		octets = ip.split('.')
+		octets = ip.strip.split('.')
 		if (octets.length != 4)
 			raise ValidationError, "IPv4 requires (4) octets."
 		end
@@ -190,7 +189,7 @@ module NetAddr
 			raise ValidationError, "#{ip} contains invalid characters."
 		end
 		
-		ip.strip!
+		ip = ip.strip
 		if (ip == "::")
 			return 0 # zero address
 		end

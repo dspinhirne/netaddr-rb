@@ -28,7 +28,7 @@ module NetAddr
 		# Throws ValidationError on error.
 		def IPv6Net.parse(net)
 			m128 = nil
-			net.strip!
+			net = net.strip
 			if (net.include?("/")) # cidr format
 				addr,mask = net.split("/")
 				m128 = Mask128.parse(mask)

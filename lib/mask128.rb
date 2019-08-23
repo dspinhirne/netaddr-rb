@@ -26,7 +26,7 @@ module NetAddr
 		#
 		# Throws ValidationError on error.
 		def Mask128.parse(mask)
-			mask.strip!
+			mask = mask.strip
 			if (mask.start_with?("/")) # cidr format
 				mask = mask[1..-1] # remove "/"
 			end

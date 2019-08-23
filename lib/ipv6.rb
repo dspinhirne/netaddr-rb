@@ -19,7 +19,7 @@ module NetAddr
 		# parse will create an IPv6 from its string representation (ie. "1::").
 		# Throws ValidationError on error.
 		def IPv6.parse(ip)
-			ip.strip!
+			ip = ip.strip
 			i = Util.parse_IPv6(ip)
 			return IPv6.new(i)
 		end

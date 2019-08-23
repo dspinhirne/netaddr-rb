@@ -19,7 +19,7 @@ module NetAddr
 		# parse will create an IPv4 from its string representation (ie. "192.168.1.1").
 		# Throws ValidationError on error.
 		def IPv4.parse(ip)
-			ip.strip!
+			ip = ip.strip
 			i = Util.parse_IPv4(ip)
 			return IPv4.new(i)
 		end

@@ -23,7 +23,7 @@ module NetAddr
 		# parse will create an IPv4Net from its string representation. Will default to a /32 netmask if not specified.
 		# Throws ValidationError on error.
 		def IPv4Net.parse(net)
-			net.strip!
+			net = net.strip
 			m32 = nil
 			if (net.include?("/")) # cidr format
 				addr,mask = net.split("/")
