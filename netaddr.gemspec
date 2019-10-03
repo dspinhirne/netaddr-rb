@@ -3,7 +3,7 @@
 Gem::Specification.new do |s|
 	s.name      =   "netaddr"
 	s.version   =   "2.0.4"
-	s.date      =   "2018-05-08"
+	s.date      =   "2019-10-03"
 	s.author    =   "Dustin Spinhirne"
 	s.summary   =   "A Ruby library for performing calculations on IPv4 and IPv6 subnets."
 	s.homepage  =   "https://github.com/dspinhirne/netaddr-rb"
