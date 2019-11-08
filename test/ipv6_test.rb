@@ -39,6 +39,18 @@ class TestIPv6 < Test::Unit::TestCase
 		assert_equal(0x00000001000200030004000500060007, NetAddr::IPv6.parse("::1:2:3:4:5:6:7").addr)
 		assert_raise(NetAddr::ValidationError){ NetAddr::IPv6.parse("fec0") }
 		assert_raise(NetAddr::ValidationError){ NetAddr::IPv6.parse("fec0:::1") }
+    
+    assert_equal(0x0064ff9b0000000000000000c0000221, NetAddr::IPv6.parse("64:ff9b::192.0.2.33").addr)
+    assert_equal(0x0064ff9b0000000000000000c0000221, NetAddr::IPv6.parse("64:ff9b::0:192.0.2.33").addr)
+    assert_equal(0x0064ff9b0000000000000000c0000221, NetAddr::IPv6.parse("64:ff9b::0:0:192.0.2.33").addr)
+    assert_equal(0x0064ff9b0000000000000000c0000221, NetAddr::IPv6.parse("64:ff9b::0:0:0:192.0.2.33").addr)
+    assert_equal(0x0064ff9b0000000000000000c0000221, NetAddr::IPv6.parse("64:ff9b::0:0:0:0:192.0.2.33").addr)
+    assert_equal(0x0064ff9b0000000000000000c0000221, NetAddr::IPv6.parse("64:ff9b:0:0:0:0:192.0.2.33").addr)
+    assert_raise(NetAddr::ValidationError){ NetAddr::IPv6.parse("64:ff9b::192.0.2") }
+    assert_raise(NetAddr::ValidationError){ NetAddr::IPv6.parse("64:ff9b::192.0.2.33.0") }
+    assert_raise(NetAddr::ValidationError){ NetAddr::IPv6.parse("64:ff9b::192.0.256.33") }
+    assert_raise(NetAddr::ValidationError){ NetAddr::IPv6.parse("64:ff9b:0:0:0:0:0:192.0.2.33") }
+    assert_raise(NetAddr::ValidationError){ NetAddr::IPv6.parse("64:ff9b::0:0:0:0:0:192.0.2.33") }
 	end
 	
 	def test_cmp
@@ -49,6 +61,12 @@ class TestIPv6 < Test::Unit::TestCase
 		assert_equal(1, ip.cmp(ip2))
 		assert_equal(-1, ip.cmp(ip3))
 		assert_equal(0, ip.cmp(ip4))
+	end
+	
+	def test_ipv4
+		ipv6 = NetAddr::IPv6.parse("64:ff9b::192.0.2.33")
+		ipv4 = ipv6.ipv4()
+		assert_equal(ipv4.to_s, "192.0.2.33")
 	end
 	
 	def test_long

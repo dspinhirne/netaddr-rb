@@ -40,6 +40,13 @@ module NetAddr
 			return 0
 		end
 		
+		# ipv4 generates an IPv4 address from an IPv6 address. The IPv4 address is generated based on
+		# the mechanism described by RFC 6052 for /96 IPv4-embedded IPv6 addresses.
+		def ipv4()
+			i = @addr & NetAddr::F32
+			return IPv4.new(i)
+		end
+		
 		# long returns the IPv6 as a string in long (uncompressed) format
 		def long()
 			words = []

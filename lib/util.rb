@@ -185,13 +185,23 @@ module NetAddr
 	# parse_IPv6 parses an IPv6 address String into an Integer
 	def Util.parse_IPv6(ip)
 	# check that only valid characters are present
-		if (ip =~ /[^0-9a-fA-F\:]/)
+		if (ip =~ /[^0-9a-fA-F\:.]/)
 			raise ValidationError, "#{ip} contains invalid characters."
 		end
 		
 		ip = ip.strip
 		if (ip == "::")
 			return 0 # zero address
+		end
+		ipv4Int = nil
+		if (ip.include?(".")) # check for ipv4 embedded addresses
+			words = ip.split(":")
+			begin
+				ipv4Int = Util.parse_IPv4(words.last)
+			rescue
+				raise ValidationError, "IPv4-embedded IPv6 address is invalid."
+			end
+			ip = ip.sub(words.last,"0:0") # temporarily remove the ipv4 portion
 		end
 		words = []
 		if (ip.include?("::")) # short format
@@ -228,7 +238,6 @@ module NetAddr
 				raise ValidationError, "#{ip} is too short."
 			end
 		end
-		
 		ipInt = 0
 		i = 8
 		words.each do |word|
@@ -236,7 +245,9 @@ module NetAddr
 			word = word.to_i(16) << (16*i)
 			ipInt = ipInt | word
 		end
-		
+		if ipv4Int # re-add ipv4 portion if present
+			ipInt = ipInt | ipv4Int
+		end
 		return ipInt
 	end
 		

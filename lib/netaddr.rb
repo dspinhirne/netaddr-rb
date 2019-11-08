@@ -39,10 +39,10 @@ module NetAddr
 	
 	## parse_ip parses a string into an IPv4 or IPv6
 	def parse_ip(ip)
-		if (ip.include?(".")) # ipv4
-			return IPv4.parse(ip)
+		if (ip.include?(":"))
+			return IPv6.parse(ip)
 		end
-		return IPv6.parse(ip)
+		return IPv4.parse(ip)
 	end
 	module_function :parse_ip
 	
