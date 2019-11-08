@@ -66,7 +66,27 @@ class TestIPv6 < Test::Unit::TestCase
 	def test_ipv4
 		ipv6 = NetAddr::IPv6.parse("64:ff9b::192.0.2.33")
 		ipv4 = ipv6.ipv4()
-		assert_equal(ipv4.to_s, "192.0.2.33")
+		assert_equal("192.0.2.33", ipv4.to_s)
+		
+		ipv6 = NetAddr::IPv6.parse("2001:db8:c000:221::")
+		ipv4 = ipv6.ipv4(32)
+		assert_equal("192.0.2.33", ipv4.to_s)
+		
+		ipv6 = NetAddr::IPv6.parse("2001:db8:1c0:2:21::")
+		ipv4 = ipv6.ipv4(40)
+		assert_equal("192.0.2.33", ipv4.to_s)
+		
+		ipv6 = NetAddr::IPv6.parse("2001:db8:122:c000:2:2100::")
+		ipv4 = ipv6.ipv4(48)
+		assert_equal("192.0.2.33", ipv4.to_s)
+		
+		ipv6 = NetAddr::IPv6.parse("2001:db8:122:3c0:0:221::")
+		ipv4 = ipv6.ipv4(56)
+		assert_equal("192.0.2.33", ipv4.to_s)
+		
+		ipv6 = NetAddr::IPv6.parse("2001:db8:122:344:c0:2:2100::")
+		ipv4 = ipv6.ipv4(64)
+		assert_equal("192.0.2.33", ipv4.to_s)
 	end
 	
 	def test_long

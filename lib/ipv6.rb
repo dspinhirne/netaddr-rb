@@ -40,11 +40,29 @@ module NetAddr
 			return 0
 		end
 		
-		# ipv4 generates an IPv4 address from an IPv6 address. The IPv4 address is generated based on
-		# the mechanism described by RFC 6052 for /96 IPv4-embedded IPv6 addresses.
-		def ipv4()
-			i = @addr & NetAddr::F32
-			return IPv4.new(i)
+		# ipv4 generates an IPv4 from an IPv6 address. The IPv4 address is generated based on the mechanism described by RFC 6052.
+		# The argument pl (prefix length) should be one of: 32, 40, 48, 56, 64, or 96. Default is 96 unless one of the supported values is provided.
+		def ipv4(pl=96)
+			if (pl == 32)
+				i = (@addr >> 64) # get bits 32-63 into position
+				return IPv4.new(i & NetAddr::F32)
+			elsif (pl == 40)
+				i = (@addr >> 48) & 0xff # get the last 8 bits into position
+				i2 = (@addr & 0xffffff0000000000000000) >> 56 # get first 24 bits into position
+				return IPv4.new(i | i2)
+			elsif (pl == 48)
+				i = (@addr >> 40) & 0xffff # get the last 16 bits into position
+				i2 = (@addr & 0xffff0000000000000000) >> 48 # get first 16 bits into position
+				return IPv4.new(i | i2)
+			elsif (pl == 56)
+				i = (@addr >> 32) & 0xffffff # get the last 24 bits into position
+				i2 = (@addr & 0xff0000000000000000) >> 40 # get first 8 bits into position
+				return IPv4.new(i | i2)
+			elsif (pl == 64)
+				i = (@addr >> 24) # get the 32 bits into position
+				return IPv4.new(i & NetAddr::F32)
+			end
+			return IPv4.new(@addr & NetAddr::F32)
 		end
 		
 		# long returns the IPv6 as a string in long (uncompressed) format
