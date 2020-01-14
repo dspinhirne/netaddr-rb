@@ -121,6 +121,7 @@ class TestIPv6 < Test::Unit::TestCase
 		assert_equal("::1:0:0", NetAddr::IPv6.parse("0:0:0:0:0:1:0:0").to_s)
 		assert_equal("::1:0", NetAddr::IPv6.parse(":0:0:0:0:0:1:0").to_s)
 		assert_equal("::1", NetAddr::IPv6.parse("0:0:0:0:0:0:0:1").to_s)
+		assert_equal("1:0:1:1:1:1:1:1", NetAddr::IPv6.parse("1:0:1:1:1:1:1:1").to_s) # see RFC 5952 section 4.2.2
 		
 		assert_equal("1::1", NetAddr::IPv6.parse("1:0:0:0:0:0:0:1").to_s)
 		assert_equal("1:1::1", NetAddr::IPv6.parse("1:1:0:0:0:0:0:1").to_s)

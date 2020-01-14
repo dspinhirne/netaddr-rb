@@ -125,8 +125,9 @@ module NetAddr
 				end
 			end
 			
-			# compress if we've found a series of 0 words in a row
-			if (finalStart != -1)
+			# compress if we've found a series of zero fields in a row.
+      # per https://tools.ietf.org/html/rfc5952#section-4.2.2 we must not compress just a single 16-bit zero field.
+			if (finalLen > 1)
 				head = hexStr[0,finalStart].join(":")
 				tailStart = finalStart + finalLen 
 				tail = hexStr[tailStart..7].join(":")
