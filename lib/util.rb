@@ -49,7 +49,7 @@ module NetAddr
 	# fill returns a copy of the given Array, stripped of any networks which are not subnets of ipnet
 	# and with any missing gaps filled in.
 	def Util.fill(ipnet,list)
-		# sort & git rid of non subnets
+		# sort & get rid of non subnets
 		subs = []
 		discard_subnets(list).each do |sub|
 			r = ipnet.rel(sub)
@@ -67,21 +67,14 @@ module NetAddr
 				filled = backfill(subs[0],base)
 			end
 			
-			# fill gaps
-			sib = ipnet.next_sib()
-			ceil = NetAddr::F32
-			if (sib != nil)
-				ceil = sib.network.addr
-			end
-			
+			# fill gaps between subnets
 			0.upto(subs.length-1) do |i|
 				sub = subs[i]
-				filled.push(sub)
-				limit = ceil
 				if (i+1 < subs.length)
-					limit = subs[i+1].network.addr
+					filled.concat( fwdfill(sub,ipnet,subs[i+1]) )
+				else
+					filled.concat( fwdfill(sub,ipnet,nil) )
 				end
-				filled.concat( fwdfill(sub,limit) )
 			end
 		end
 		return filled
@@ -131,18 +124,80 @@ module NetAddr
 		return filtered
 	end
 	
-	# fwdfill returns subnets between given IPv4Net/IPv6Nett and the limit address.
-	# limit should be > ipnet. will create subnets up to limit.
-	def Util.fwdfill(ipnet,limit)
-		nets = []
+	# fwdfill returns subnets between given IPv4Net/IPv6Nett and the limit address. limit should be > ipnet.
+	def Util.fwdfill(ipnet,supernet,limit)
+		nets = [ipnet]
 		cur = ipnet
-		while true do
-			net = cur.next
-			if (net == nil || net.network.addr >= limit)
-				break
+		if (limit != nil) # if limit, then fill gaps between net and limit
+			while true do
+				nextSub = cur.next()
+				# ensure we've not exceed the total address space
+				if (nextSub == nil)
+					break
+				end
+				# ensure we've not exceeded the address space of supernet
+				if (supernet.rel(nextSub) == nil)
+					break
+				end
+				# ensure we've not hit limit
+				if (nextSub.network.addr == limit.network.addr)
+					break
+				end
+				
+				# check relationship to limit
+				if (nextSub.rel(limit) != nil) # if related, then nextSub must be a supernet of limit. we need to shrink it.
+					prefixLen = nextSub.netmask.prefix_len
+					while true do
+						prefixLen += 1
+						if (nextSub.kind_of?(IPv4Net))
+							nextSub = IPv4Net.new(nextSub.network, Mask32.new(prefixLen))
+						else
+							nextSub = IPv6Net.new(nextSub.network, Mask128.new(prefixLen))
+						end
+						if (nextSub.rel(limit) == nil) # stop when we no longer overlap with limit
+							break
+						end
+					end
+				else # otherwise, if unrelated then grow until we hit the limit
+					prefixLen = nextSub.netmask.prefix_len
+					mask = nextSub.netmask.mask
+					while true do
+						prefixLen -= 1
+						if (prefixLen == supernet.netmask.prefix_len) # break if we've hit the supernet boundary
+							break
+						end
+						mask = mask << 1
+						if (nextSub.network.addr|mask != mask) # break when bit boundary crossed (there are '1' bits in the host portion)
+							break
+						end
+						if (nextSub.kind_of?(IPv4Net))
+							grown = IPv4Net.new(nextSub.network, Mask32.new(prefixLen))
+						else
+							grown = IPv6Net.new(nextSub.network, Mask128.new(prefixLen))
+						end
+						if (grown.rel(limit) != nil) # if we've overlapped with limit in any way, then break
+							break
+						end
+						nextSub = grown
+					end
+				end
+				nets.push(nextSub)
+				cur = nextSub
 			end
-			nets.push(net)
-			cur = net
+		else # if no limit, then get next largest sibs until we've exceeded supernet
+			while true do
+				nextSub = cur.next()
+				# ensure we've not exceed the total address space
+				if (nextSub == nil)
+					break
+				end
+				# ensure we've not exceeded the address space of supernet
+				if (supernet.rel(nextSub) == nil)
+					break
+				end
+				nets.push(nextSub)
+				cur = nextSub
+			end
 		end
 		return nets
 	end

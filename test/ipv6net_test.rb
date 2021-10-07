@@ -48,24 +48,66 @@ class TestIPv6Net < Test::Unit::TestCase
 	end
 
 	def test_fill
+		# filter supernet. remove subnets of subnets. basic fwd fill.
 		parent = NetAddr::IPv6Net.parse("ff00::/8")
 		nets = []
-		["ff08::/14", "fe00::/7", "ff20::/11", "ff20::/12"].each do |net|
+		["ff00::/8", "ff00::/9", "ff08::/14", "fe00::/7", "ff20::/11", "ff20::/12"].each do |net|
 			nets.push(NetAddr::IPv6Net.parse(net))
 		end
-		expect = ["ff00::/13", "ff08::/14", "ff0c::/14", "ff10::/12", "ff20::/11", "ff40::/10", "ff80::/9"]
+		expect = ["ff00::/9", "ff80::/9"]
 		i = 0
 		parent.fill(nets).each do |net|
 			assert_equal(expect[i],net.to_s)
 			i += 1
 		end
 		
+		# basic backfill
+		parent = NetAddr::IPv6Net.parse("8000::/1")
+		nets = []
+		["c000::/2"].each do |net|
+			nets.push(NetAddr::IPv6Net.parse(net))
+		end
+		expect = ["8000::/2","c000::/2"]
+		i = 0
+		parent.fill(nets).each do |net|
+			assert_equal(expect[i],net.to_s)
+			i += 1
+		end
+		
+		# basic fwd fill with non-contiguous subnets
 		parent = NetAddr::IPv6Net.parse("ff00::/121")
 		nets = []
 		["ff00::/126", "ff00::/120"].each do |net|
 			nets.push(NetAddr::IPv6Net.parse(net))
 		end
 		expect = ["ff00::/126", "ff00::4/126", "ff00::8/125", "ff00::10/124", "ff00::20/123", "ff00::40/122"]
+		i = 0
+		parent.fill(nets).each do |net|
+			assert_equal(expect[i],net.to_s)
+			i += 1
+		end
+		
+		# basic backfill. complex fwd fill that uses 'shrink' of the proposed ffff:ffff:ffff:fff8::/62 subnet. designed to cross the /64 bit boundary.
+		parent = NetAddr::IPv6Net.parse("fff:ffff:ffff:fff0::/60")
+		nets = []
+		["ffff:ffff:ffff:fff4::/62", "ffff:ffff:ffff:fffb::/65"].each do |net|
+			nets.push(NetAddr::IPv6Net.parse(net))
+		end
+		expect = ["ffff:ffff:ffff:fff0::/62", "ffff:ffff:ffff:fff4::/62", "ffff:ffff:ffff:fff8::/63", "ffff:ffff:ffff:fffa::/64", "ffff:ffff:ffff:fffb::/65",
+			"ffff:ffff:ffff:fffb:8000::/65", "ffff:ffff:ffff:fffc::/62"]
+		i = 0
+		parent.fill(nets).each do |net|
+			assert_equal(expect[i],net.to_s)
+			i += 1
+		end
+		
+		# list contains the supernet
+		parent = NetAddr::IPv6Net.parse("ffff::/16")
+		nets = []
+		["ffff::/16"].each do |net|
+			nets.push(NetAddr::IPv6Net.parse(net))
+		end
+		expect = []
 		i = 0
 		parent.fill(nets).each do |net|
 			assert_equal(expect[i],net.to_s)

@@ -52,6 +52,7 @@ class TestIPv4Net < Test::Unit::TestCase
 	end
 
 	def test_fill
+		# filter supernet. remove subnets of subnets. basic fwd fill.
 		parent = NetAddr::IPv4Net.parse("10.0.0.0/24")
 		nets = []
 		["10.0.0.0/24", "10.0.0.0/8", "10.0.0.8/30", "10.0.0.16/30", "10.0.0.16/28"].each do |net|
@@ -64,6 +65,7 @@ class TestIPv4Net < Test::Unit::TestCase
 			i += 1
 		end
 		
+		# basic backfill
 		parent = NetAddr::IPv4Net.parse("128.0.0.0/1")
 		nets = []
 		["192.0.0.0/2"].each do |net|
@@ -76,12 +78,39 @@ class TestIPv4Net < Test::Unit::TestCase
 			i += 1
 		end
 		
+		# basic fwd fill with non-contiguous subnets
 		parent = NetAddr::IPv4Net.parse("1.0.0.0/25")
 		nets = []
 		["1.0.0.0/30", "1.0.0.64/26"].each do |net|
 			nets.push(NetAddr::IPv4Net.parse(net))
 		end
 		expect = ["1.0.0.0/30", "1.0.0.4/30", "1.0.0.8/29", "1.0.0.16/28", "1.0.0.32/27", "1.0.0.64/26"]
+		i = 0
+		parent.fill(nets).each do |net|
+			assert_equal(expect[i],net.to_s)
+			i += 1
+		end
+    
+		# basic backfill. complex fwd fill that uses 'shrink' of the proposed 1.0.16.0/21 subnet
+    parent = NetAddr::IPv4Net.parse("1.0.0.0/19")
+		nets = []
+		["1.0.8.0/21", "1.0.20.0/24"].each do |net|
+			nets.push(NetAddr::IPv4Net.parse(net))
+		end
+		expect = ["1.0.0.0/21","1.0.8.0/21","1.0.16.0/22","1.0.20.0/24","1.0.21.0/24","1.0.22.0/23","1.0.24.0/21"]
+		i = 0
+		parent.fill(nets).each do |net|
+			assert_equal(expect[i],net.to_s)
+			i += 1
+		end
+		
+		# list contains the supernet
+		parent = NetAddr::IPv4Net.parse("1.0.0.0/19")
+		nets = []
+		["1.0.0.0/19"].each do |net|
+			nets.push(NetAddr::IPv4Net.parse(net))
+		end
+		expect = []
 		i = 0
 		parent.fill(nets).each do |net|
 			assert_equal(expect[i],net.to_s)
