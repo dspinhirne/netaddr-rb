@@ -13,6 +13,7 @@ class TestNetAddr < Test::Unit::TestCase
 	def test_parse_net
 		assert_equal("128.0.0.1/32", NetAddr.parse_net("128.0.0.1/32").to_s)
 		assert_equal("1::/24", NetAddr.parse_net("1::1/24").to_s)
+		assert_equal("1::aabb:ccdd/128", NetAddr.parse_net("1::170.187.204.221/128").to_s)
 	end
 	
 	def test_ipv4_prefix_len

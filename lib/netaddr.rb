@@ -48,10 +48,10 @@ module NetAddr
 	
 	## parse_net parses a string into an IPv4Net or IPv6Net
 	def parse_net(net)
-		if (net.include?(".")) # ipv4
-			return IPv4Net.parse(net)
+		if (net.include?(":"))
+			return IPv6Net.parse(net)
 		end
-		return IPv6Net.parse(net)
+		return IPv4Net.parse(net)
 	end
 	module_function :parse_net
 	
