@@ -43,6 +43,19 @@ class TestNetAddr < Test::Unit::TestCase
 		sorted = NetAddr.sort_IPv4Net(nets)
 		expect = [nets[1],nets[4],nets[0],nets[2],nets[3]]
 		assert_equal(expect, sorted)
+
+		nets = []
+		(0..31).each do |third|
+			(0..255).each do |fourth|
+				nets.push(NetAddr::IPv4Net.parse("0.0.#{third}.#{fourth}/32"))
+			end
+		end
+		sorted = NetAddr.sort_IPv4Net(nets)
+		expect = nets
+		puts "\nIPv4Net: Sorting #{nets.count} IPv4Nets via NetAddr.sort_IPv4Net()."
+		assert_equal(expect, sorted)
+		sorted = NetAddr.sort_IPv4Net(nets.reverse)
+		assert_equal(expect, sorted)
 	end
 	
 	def test_summ_IPv4Net
