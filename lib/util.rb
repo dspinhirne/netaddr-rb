@@ -57,7 +57,7 @@ module NetAddr
 				subs.push(sub)
 			end
 		end
-		subs = quick_sort(subs)
+		subs.sort!
 		
 		filled = []
 		if (subs.length > 0)
@@ -306,37 +306,9 @@ module NetAddr
 		return ipInt
 	end
 		
-	# quick_sort will return a sorted copy of the provided Array.
-	# The array must contain only objects which implement a cmp method and which are comparable to each other.
-	def Util.quick_sort(list)
-		if (list.length <= 1)
-			return [].concat(list)
-		end
-		
-		final_list = []
-		lt_list = []
-		gt_list = []
-		eq_list = []
-		pivot = list[list.length-1]
-		list.each do |ip|
-			cmp = pivot.cmp(ip)
-			if (cmp == 1)
-				lt_list.push(ip)
-			elsif (cmp == -1)
-				gt_list.push(ip)
-			else
-				eq_list.push(ip)
-			end
-		end
-		final_list.concat( quick_sort(lt_list) )
-		final_list.concat(eq_list)
-		final_list.concat( quick_sort(gt_list) )
-		return final_list
-	end
-	
 	# summ_peers returns a copy of the list with any merge-able subnets summ'd together.
 	def Util.summ_peers(list)
-		summd = quick_sort(list)
+		summd = list.sort
 		while true do
 			list_len = summd.length
 			last = list_len - 1
