@@ -2,6 +2,8 @@ module NetAddr
 	
 	#IPv6 represents a single IPv6 address. 
 	class IPv6
+		include Comparable
+
 		# addr is the Integer representation of this IP address
 		attr_reader :addr
 		
@@ -39,6 +41,8 @@ module NetAddr
 			end
 			return 0
 		end
+		
+		alias :"<=>" :cmp
 		
 		# ipv4 generates an IPv4 from an IPv6 address. The IPv4 address is generated based on the mechanism described by RFC 6052.
 		# The argument pl (prefix length) should be one of: 32, 40, 48, 56, 64, or 96. Default is 96 unless one of the supported values is provided.

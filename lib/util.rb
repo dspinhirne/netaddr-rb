@@ -11,7 +11,7 @@ module NetAddr
 		cur = ipnet
 		while true do
 			net = cur.prev
-			if (net == nil || net.network.addr < limit)
+			if (net.nil? || net.network.addr < limit)
 				break
 			end
 			nets.unshift(net)
@@ -128,11 +128,11 @@ module NetAddr
 	def Util.fwdfill(ipnet,supernet,limit)
 		nets = [ipnet]
 		cur = ipnet
-		if (limit != nil) # if limit, then fill gaps between net and limit
+		if (!limit.nil?) # if limit, then fill gaps between net and limit
 			while true do
 				nextSub = cur.next()
 				# ensure we've not exceed the total address space
-				if (nextSub == nil)
+				if (nextSub.nil?)
 					break
 				end
 				# ensure we've not exceeded the address space of supernet
@@ -188,7 +188,7 @@ module NetAddr
 			while true do
 				nextSub = cur.next()
 				# ensure we've not exceed the total address space
-				if (nextSub == nil)
+				if (nextSub.nil?)
 					break
 				end
 				# ensure we've not exceeded the address space of supernet
