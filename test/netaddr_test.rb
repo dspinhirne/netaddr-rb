@@ -102,6 +102,34 @@ class TestNetAddr < Test::Unit::TestCase
 			assert_equal(expect[i],net.to_s)
 			i += 1
 		end
+		
+		if ENV['REALLY_SLOW_TEST'] == "true"
+			nets = []
+			(0..31).each do |third|
+				(0..255).each do |fourth|
+					nets.push(NetAddr::IPv4Net.parse("0.0.#{third}.#{fourth}/32"))
+				end
+			end
+			expect = ["0.0.0.0/19"]
+			puts "\nIPv4Net: Summing #{nets.count} IPv4Nets via NetAddr.summ_IPv4Net(). Result: #{expect}."
+			i = 0
+			NetAddr.summ_IPv4Net(nets).each do |net|
+				assert_equal(expect[i],net.to_s)
+				i += 1
+			end
+		end
+		
+		nets = []
+		unrelated = ["10.0.0.0/30", "10.0.1.0/30", "10.0.2.0/30", "10.0.3.0/30"]
+		unrelated.each do |net|
+			nets.push(NetAddr::IPv4Net.parse(net))
+		end
+		expect = unrelated
+		i = 0
+		NetAddr.summ_IPv4Net(nets).each do |net|
+			assert_equal(expect[i],net.to_s)
+			i += 1
+		end
 	end
 	
 	def test_sort_IPv6
