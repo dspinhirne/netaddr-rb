@@ -11,7 +11,7 @@ module NetAddr
 		cur = ipnet
 		while true do
 			net = cur.prev
-			if (net == nil || net.network.addr < limit)
+			if (net.nil? || net.network.addr < limit)
 				break
 			end
 			nets.unshift(net)
@@ -23,27 +23,35 @@ module NetAddr
 	
 	# discard_subnets returns a copy of the IPv4NetList with any entries which are subnets of other entries removed.
 	def Util.discard_subnets(list)
-		keepers = []
-		last = list[list.length-1]
-		keep_last = true
-		list.each do |net|
-			rel = last.rel(net)
-			if (!rel) # keep unrelated nets
-				keepers.push(net)
-			elsif (rel == -1) # keep supernets, but do not keep last
-				keepers.push(net)
-				keep_last = false
+		result_length = -1
+		while list.length != result_length
+			result_length = list.length
+			subnets_to_consider = list.length
+			while subnets_to_consider > 0
+				last = list.pop
+				subnets_to_consider -= 1
+				keep_last = true
+				list.keep_if do |net|
+					rel = last.rel(net)
+					if (!rel) # keep unrelated nets
+						true
+					elsif (rel == -1) # keep supernets, but do not keep last
+						keep_last = false
+						true
+					else
+						subnets_to_consider -= 1
+						false
+					end
+				end
+
+				if keep_last
+					list.unshift(last)
+				else
+					subnets_to_consider -= 1
+				end
 			end
 		end
-		
-		# recursively clean up keepers
-		if (keepers.length > 0)
-			keepers = discard_subnets(keepers)
-		end
-		if keep_last
-			keepers.unshift(last)
-		end
-		return keepers
+		return list
 	end
 	
 	# fill returns a copy of the given Array, stripped of any networks which are not subnets of ipnet
@@ -57,7 +65,7 @@ module NetAddr
 				subs.push(sub)
 			end
 		end
-		subs = quick_sort(subs)
+		subs.sort!
 		
 		filled = []
 		if (subs.length > 0)
@@ -128,11 +136,11 @@ module NetAddr
 	def Util.fwdfill(ipnet,supernet,limit)
 		nets = [ipnet]
 		cur = ipnet
-		if (limit != nil) # if limit, then fill gaps between net and limit
+		if (!limit.nil?) # if limit, then fill gaps between net and limit
 			while true do
 				nextSub = cur.next()
 				# ensure we've not exceed the total address space
-				if (nextSub == nil)
+				if (nextSub.nil?)
 					break
 				end
 				# ensure we've not exceeded the address space of supernet
@@ -188,7 +196,7 @@ module NetAddr
 			while true do
 				nextSub = cur.next()
 				# ensure we've not exceed the total address space
-				if (nextSub == nil)
+				if (nextSub.nil?)
 					break
 				end
 				# ensure we've not exceeded the address space of supernet
@@ -306,37 +314,9 @@ module NetAddr
 		return ipInt
 	end
 		
-	# quick_sort will return a sorted copy of the provided Array.
-	# The array must contain only objects which implement a cmp method and which are comparable to each other.
-	def Util.quick_sort(list)
-		if (list.length <= 1)
-			return [].concat(list)
-		end
-		
-		final_list = []
-		lt_list = []
-		gt_list = []
-		eq_list = []
-		pivot = list[list.length-1]
-		list.each do |ip|
-			cmp = pivot.cmp(ip)
-			if (cmp == 1)
-				lt_list.push(ip)
-			elsif (cmp == -1)
-				gt_list.push(ip)
-			else
-				eq_list.push(ip)
-			end
-		end
-		final_list.concat( quick_sort(lt_list) )
-		final_list.concat(eq_list)
-		final_list.concat( quick_sort(gt_list) )
-		return final_list
-	end
-	
 	# summ_peers returns a copy of the list with any merge-able subnets summ'd together.
 	def Util.summ_peers(list)
-		summd = quick_sort(list)
+		summd = list.sort
 		while true do
 			list_len = summd.length
 			last = list_len - 1

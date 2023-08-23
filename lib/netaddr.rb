@@ -62,7 +62,7 @@ module NetAddr
 			raise ArgumentError, "Expected an Array for 'list' but got a #{list.class}."
 		end
 		filtered = Util.filter_IPv4(list)
-		return Util.quick_sort(filtered)
+		return filtered.sort
 	end
 	module_function :sort_IPv4
 	
@@ -73,7 +73,7 @@ module NetAddr
 			raise ArgumentError, "Expected an Array for 'list' but got a #{list.class}."
 		end
 		filtered = Util.filter_IPv6(list)
-		return Util.quick_sort(filtered)
+		return filtered.sort
 	end
 	module_function :sort_IPv6
 	
@@ -84,7 +84,7 @@ module NetAddr
 			raise ArgumentError, "Expected an Array for 'list' but got a #{list.class}."
 		end
 		filtered = Util.filter_IPv4Net(list)
-		return Util.quick_sort(filtered)
+		return filtered.sort
 	end
 	module_function :sort_IPv4Net
 	
@@ -95,7 +95,7 @@ module NetAddr
 			raise ArgumentError, "Expected an Array for 'list' but got a #{list.class}."
 		end
 		filtered = Util.filter_IPv6Net(list)
-		return Util.quick_sort(filtered)
+		return filtered.sort
 	end
 	module_function :sort_IPv6Net
 	

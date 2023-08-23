@@ -2,6 +2,8 @@ module NetAddr
 	
 	#IPv4 represents a single IPv4 address. 
 	class IPv4
+		include Comparable
+
 		# addr is the Integer representation of this IP address
 		attr_reader :addr
 		
@@ -39,6 +41,8 @@ module NetAddr
 			end
 			return 0
 		end
+		
+		alias :"<=>" :cmp
 		
 		# multicast_mac returns the EUI48 multicast mac-address for this IP.
 		# It will return the zero address for IPs outside of the multicast range 224.0.0.0/4.

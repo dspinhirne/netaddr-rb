@@ -2,6 +2,7 @@ module NetAddr
 	
 	#IPv4Net represents an IPv4 network. 
 	class IPv4Net
+		include Comparable
 		
 		#arguments:
 		#* ip - an IPv4 object
@@ -60,6 +61,8 @@ module NetAddr
 			end
 			return self.netmask.cmp(other.netmask)
 		end
+		
+		alias :"<=>" :cmp
 		
 		#contains returns true if the IPv4Net contains the IPv4
 		def contains(ip)
