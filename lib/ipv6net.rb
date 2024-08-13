@@ -2,6 +2,7 @@ module NetAddr
 	
 	#IPv6Net represents an IPv6 network. 
 	class IPv6Net
+		include Comparable
 		
 		#arguments:
 		#* ip - an IPv6 object
@@ -56,6 +57,8 @@ module NetAddr
 			end
 			return self.netmask.cmp(other.netmask)
 		end
+		
+		alias :"<=>" :cmp
 		
 		#contains returns true if the IPv6Net contains the IPv6
 		def contains(ip)
