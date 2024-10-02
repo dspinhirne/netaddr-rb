@@ -45,6 +45,15 @@ class TestIPv4Net < Test::Unit::TestCase
 		assert_equal(false, net.contains(ip2))
 		assert_equal(false, net.contains(ip3))
 	end
+
+	def test_case_statement
+	  assert case NetAddr::IPv4.parse("1.0.0.15")
+	         when NetAddr::IPv4Net.parse("1.0.0.8/29")
+	           true
+	         else
+	           false
+	         end
+	end
 	
 	def test_extended
 		net = NetAddr::IPv4Net.parse("128.0.0.1/24")

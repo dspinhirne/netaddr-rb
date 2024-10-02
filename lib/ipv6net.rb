@@ -70,7 +70,9 @@ module NetAddr
 			end
 			return false
 		end
-		
+
+		alias :"===" contains
+
 		# fill returns a copy of the given Array, stripped of any networks which are not subnets of this IPv6Net
 		# and with any missing gaps filled in.
 		def fill(list)

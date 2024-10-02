@@ -47,6 +47,15 @@ class TestIPv6Net < Test::Unit::TestCase
 		assert_equal(false, net.contains(ip3))
 	end
 
+	def test_case_statement
+	  assert case NetAddr::IPv6.parse("1:f::")
+	         when NetAddr::IPv6Net.parse("1:8::/29")
+	           true
+	         else
+	           false
+	         end
+	end
+
 	def test_fill
 		# filter supernet. remove subnets of subnets. basic fwd fill.
 		parent = NetAddr::IPv6Net.parse("ff00::/8")
