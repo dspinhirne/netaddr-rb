@@ -86,6 +86,7 @@ module NetAddr
 			end
 			return IPv6.new(self.addr + 1)
 		end
+		alias succ next
 		
 		# prev returns the preceding IPv6 or nil if this is 0.0.0.0
 		def prev()
