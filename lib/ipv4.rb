@@ -62,6 +62,7 @@ module NetAddr
 			end
 			return IPv4.new(self.addr + 1)
 		end
+		alias succ next
 		
 		# prev returns the preceding IPv4 or nil if this is 0.0.0.0
 		def prev()

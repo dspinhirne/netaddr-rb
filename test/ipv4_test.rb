@@ -33,6 +33,24 @@ class TestIPv4 < Test::Unit::TestCase
 		assert_equal(0, ip.cmp(ip4))
 	end
 	
+	def test_cover
+		first = NetAddr::IPv4.parse("128.0.0.7")
+		last = NetAddr::IPv4.parse("128.0.0.33")
+		range = (first..last)
+
+		covered = NetAddr::IPv4.parse("128.0.0.13")
+		assert(range.cover?(covered))
+
+		under = NetAddr::IPv4.parse("128.0.0.5")
+		refute(range.cover?(under))
+
+		over = NetAddr::IPv4.parse("127.0.0.111")
+		refute(range.cover?(over))
+
+		beyond = NetAddr::IPv4.parse("129.0.0.13")
+		refute(range.cover?(beyond))
+	end
+
 	def test_multicast_mac
 		assert_equal(0, NetAddr::IPv4.parse("223.255.255.255").multicast_mac.addr)
 		assert_equal("01-00-5e-00-00-00", NetAddr::IPv4.parse("224.0.0.0").multicast_mac.to_s)
@@ -52,6 +70,18 @@ class TestIPv4 < Test::Unit::TestCase
 		assert_nil(NetAddr::IPv4.parse("0.0.0.0").prev())
 	end
 	
+	def test_range
+		first = NetAddr::IPv4.parse("128.255.255.254")
+		last = NetAddr::IPv4.parse("129.0.0.1")
+		expected = [
+			NetAddr::IPv4.parse("128.255.255.254"),
+			NetAddr::IPv4.parse("128.255.255.255"),
+			NetAddr::IPv4.parse("129.0.0.0"),
+			NetAddr::IPv4.parse("129.0.0.1")
+		]
+		assert_equal(expected, (first..last).to_a)
+	end
+
 	def test_to_net
 		ip = NetAddr::IPv4.parse("192.168.1.1")
 		net = NetAddr::IPv4Net.parse("192.168.1.1")

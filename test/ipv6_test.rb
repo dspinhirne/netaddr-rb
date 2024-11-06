@@ -62,6 +62,24 @@ class TestIPv6 < Test::Unit::TestCase
 		assert_equal(-1, ip.cmp(ip3))
 		assert_equal(0, ip.cmp(ip4))
 	end
+
+	def test_cover
+		first = NetAddr::IPv6.parse("::7")
+		last = NetAddr::IPv6.parse("::33")
+		range = (first..last)
+
+		covered = NetAddr::IPv6.parse("::13")
+		assert(range.cover?(covered))
+
+		under = NetAddr::IPv6.parse("::5")
+		refute(range.cover?(under))
+
+		over = NetAddr::IPv6.parse("::127.0.0.111")
+		refute(range.cover?(over))
+
+		beyond = NetAddr::IPv6.parse("::129.0.0.13")
+		refute(range.cover?(beyond))
+	end
 	
 	def test_ipv4
 		ipv6 = NetAddr::IPv6.parse("64:ff9b::192.0.2.33")
@@ -104,7 +122,19 @@ class TestIPv6 < Test::Unit::TestCase
 		assert_equal("::", NetAddr::IPv6.parse("::1").prev().to_s)
 		assert_nil(NetAddr::IPv6.parse("::").prev())
 	end
-	
+
+	def test_range
+		first = NetAddr::IPv6.parse("::128.255.255.254")
+		last = NetAddr::IPv6.parse("::129.0.0.1")
+		expected = [
+			NetAddr::IPv6.parse("::128.255.255.254"),
+			NetAddr::IPv6.parse("::128.255.255.255"),
+			NetAddr::IPv6.parse("::129.0.0.0"),
+			NetAddr::IPv6.parse("::129.0.0.1")
+		]
+		assert_equal(expected, (first..last).to_a)
+	end
+
 	def test_to_net
 		ip = NetAddr::IPv6.parse("1::")
 		net = NetAddr::IPv6Net.parse("1::")
