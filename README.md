@@ -2,10 +2,10 @@
 A Ruby library for performing calculations on IPv4 and IPv6 subnets. There is also limited support for EUI addresses.
 
 ### Version 1.x
-The original netaddr which I created in 2007. My use case then was creating an internal IPAM system for Rackspace.
+The original netaddr used for a custom IPAM system that was built for a large cloud provider.
 
 ### Version 2.x
-A complete rewrite and totally incompatible with 1.x. My main motivation now is to reduce bug reports resulting from the poor code quality of 1.x.
+A complete rewrite and totally incompatible with 1.x. 
 
 
 # Building
